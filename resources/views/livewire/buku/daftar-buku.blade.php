@@ -103,7 +103,7 @@
                     <div class="card-footer bg-white border-0 pt-0">
                         <div class="d-grid gap-2">
                             <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-info-circle me-1"></i> Detail
+                                <i class="bi bi-info-circle me-1"></i> Pinjam
                             </button>
                         </div>
                     </div>
