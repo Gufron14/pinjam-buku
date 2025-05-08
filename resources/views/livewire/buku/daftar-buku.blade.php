@@ -2,7 +2,7 @@
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-md-8">
-            <h1 class="fw-bold text-primary mb-1">Katalog Buku</h1>
+            <h1 class="fw-bold text-success mb-1">Katalog Buku</h1>
             <p class="text-muted">Temukan koleksi buku terbaik untuk dibaca</p>
         </div>
         <div class="col-md-4">

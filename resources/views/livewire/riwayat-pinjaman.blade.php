@@ -1,5 +1,5 @@
 <div class="container py-4">
-    <h1 class="mb-4">Riwayat Peminjaman Buku</h1>
+    <h1 class="mb-4 fw-bold text-success">Riwayat Peminjaman Buku</h1>
 
     @if(empty($loanHistories) || count($loanHistories) == 0)
         <div class="alert alert-info" role="alert">
