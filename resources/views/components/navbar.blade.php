@@ -17,8 +17,8 @@
 
             @guest
                 <div class="d-flex">
-                    <a href="{{ route('login') }}" class="btn btn-primary fw-bold ms-2">Login</a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-primary ms-2 fw-bold">Daftar</a>
+                    <a href="{{ route('login') }}" class="btn btn-success fw-bold ms-2">Login</a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-success ms-2 fw-bold">Daftar</a>
                 </div>
             @endguest
 
@@ -27,9 +27,10 @@
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img src="{{ Auth::user()->avatar ?? asset('asset/img/user.png') }}"
-                            onerror="this.onerror=null; this.src='{{ asset('asset/img/user.png') }}'" class="rounded-circle"
-                            style="width: 30px;" alt="Avatar">
+                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('asset/img/user.png') }}"
+                            onerror="this.onerror=null; this.src='{{ asset('asset/img/user.png') }}'" class="rounded-circle" width="36px" height="36px"
+                            style="object-fit: cover;" alt="Avatar">
+
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{{ route('profil') }}">Profil</a></li>
