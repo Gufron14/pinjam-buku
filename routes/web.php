@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\Dashboard;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Profil;
 use App\Livewire\Auth\Register;
@@ -35,3 +36,7 @@ Route::get('daftar-buku', DaftarBuku::class)->name('daftar-buku');
 Route::middleware('auth')->group(function () {
     Route::get('riwayat-pinjam', RiwayatPinjaman::class)->name('riwayat-pinjam');
 });
+
+
+// Admin
+Route::get('dashboard', Dashboard::class)->name('dashboard');
