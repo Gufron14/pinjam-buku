@@ -23,9 +23,12 @@ class Login extends Component
         $this->validate();
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+
+            $user = Auth::user();
+
             // Check if user is admin
-            if (Auth::user()->is_admin) {
-                return redirect()->route('admin.dashboard');
+            if ($user->hasRole('admin')) {
+                return redirect()->route('dashboard');
             } else {
                 return redirect()->route('/');
             }
