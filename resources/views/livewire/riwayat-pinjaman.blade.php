@@ -10,24 +10,23 @@
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead class="table-light">
-                    <tr>
+                    <tr class="text-center">
                         <th>No</th>
                         <th>Judul Buku</th>
-                        <th>Kategori</th>
+                        {{-- <th>Kategori</th> --}}
                         <th>Tanggal Pinjam</th>
-                        <th>Tanggal Kembali</th>
                         <th>Status</th>
+                        <th>Tanggal Kembali</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($loanHistories as $index => $history)
-                        <tr>
+                        <tr class="text-center">
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $history->book->judul }}</td>
-                            <td>{{ $history->book->category->nama_kategori ?? 'N/A' }}</td>
+                            <td class="text-start">{{ $history->book->judul }}</td>
+                            {{-- <td>{{ $history->book->category->nama_kategori ?? 'N/A' }}</td> --}}
                             <td>{{ \Carbon\Carbon::parse($history->tanggal_pinjam)->format('d M Y') }}</td>
-                            <td>{{ $history->tanggal_kembali ? \Carbon\Carbon::parse($history->tanggal_kembali)->format('d M Y') : 'Belum dikembalikan' }}</td>
-                            <td>
+                            <td class="text-center">
                                 @if($history->status == 'dipinjam')
                                     <span class="badge bg-primary">Dipinjam</span>
                                 @elseif($history->status == 'dikembalikan')
@@ -36,6 +35,7 @@
                                     <span class="badge bg-danger">Terlambat</span>
                                 @endif
                             </td>
+                            <td>{{ $history->tanggal_kembali ? \Carbon\Carbon::parse($history->tanggal_kembali)->format('d M Y') : 'Belum dikembalikan' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
