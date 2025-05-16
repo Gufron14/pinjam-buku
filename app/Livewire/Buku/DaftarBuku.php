@@ -62,8 +62,11 @@ class DaftarBuku extends Component
     }
 
     public function pinjamBuku($bookId)
-    {   
-        
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
         $user = auth()->user();
 
         // Cek apakah user sudah pinjam buku ini dan belum dikembalikan
@@ -110,12 +113,16 @@ class DaftarBuku extends Component
         // Kirim event sukses
         $this->dispatch('showAlertPinjam', [
             'type' => 'success',
-            'message' => 'Buku berhasil dipinjam! Silakan ambil di Taman Baca Balarea!'
+            'message' => 'Buku berhasil dipinjam! Silakan ambil di Taman Baca Balarea!',
         ]);
     }
 
     public function kembalikanBuku($bookId)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
         $user = auth()->user();
 
         $transaction = LoanHistory::where('id_user', $user->id)->where('id_buku', $bookId)->whereNull('tanggal_kembali')->first();
@@ -139,7 +146,7 @@ class DaftarBuku extends Component
         // Kirim event sukses
         $this->dispatch('showAlertKembali', [
             'type' => 'success',
-            'message' => 'Silakan kembalikan ke Taman Baca Balarea!'
+            'message' => 'Silakan antarkan Buku ke Taman Baca Balarea!',
         ]);
     }
 

@@ -40,47 +40,55 @@
                             </table>
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('daftar-buku') }}" class="btn btn-secondary">Kembali</a>
-                                @php
-                                    $user = auth()->user();
-                                    $pinjamAktif = 0;
-                                    $sudahDipinjam = false;
+                                @auth
+                                    @php
+                                        $user = auth()->user();
+                                        $pinjamAktif = 0;
+                                        $sudahDipinjam = false;
 
-                                    if ($user) {
-                                        $sudahDipinjam = \App\Models\LoanHistory::where('id_user', $user->id)
-                                            ->where('id_buku', $buku->id_buku)
+                                        if ($user) {
+                                            $sudahDipinjam = \App\Models\LoanHistory::where('id_user', $user->id)
+                                                ->where('id_buku', $buku->id_buku)
+                                                ->whereNull('tanggal_kembali')
+                                                ->exists();
+                                        }
+
+                                        $pinjamanAktif = \App\Models\LoanHistory::where('id_user', $user->id)
                                             ->whereNull('tanggal_kembali')
-                                            ->exists();
-                                    }
+                                            ->count();
 
-                                    $pinjamanAktif = \App\Models\LoanHistory::where('id_user', $user->id)
-                                        ->whereNull('tanggal_kembali')
-                                        ->count();
+                                        $tidakBisaPinjam = $sudahDipinjam || $pinjamanAktif >= 2;
+                                    @endphp
 
-                                    $tidakBisaPinjam = $sudahDipinjam || $pinjamanAktif >= 2;
-                                @endphp
-
-                                @if ($user)
-                                    @if ($sudahDipinjam)
-                                        <button type="submit" wire:click="kembalikanBuku({{ $buku->id_buku }})"
-                                            class="btn btn-sm btn-outline-danger fw-bold">
-                                            Kembalikan Buku
-                                        </button>
+                                    @if ($user)
+                                        @if ($sudahDipinjam)
+                                            <button type="submit" wire:click="kembalikanBuku({{ $buku->id_buku }})"
+                                                class="btn btn-sm btn-outline-danger fw-bold">
+                                                Kembalikan Buku
+                                            </button>
+                                        @else
+                                            <button type="submit" wire:click="pinjamBuku({{ $buku->id_buku }})"
+                                                class="btn btn-sm btn-outline-success fw-bold"
+                                                @if ($tidakBisaPinjam) disabled @endif>
+                                                @if ($pinjamanAktif >= 2)
+                                                    Maks. 2 Buku Dipinjam
+                                                @else
+                                                    Pinjam Sekarang
+                                                @endif
+                                            </button>
+                                        @endif
                                     @else
-                                        <button type="submit" wire:click="pinjamBuku({{ $buku->id_buku }})"
-                                            class="btn btn-sm btn-outline-success fw-bold"
-                                            @if ($tidakBisaPinjam) disabled @endif>
-                                            @if ($pinjamanAktif >= 2)
-                                                Maks. 2 Buku Dipinjam
-                                            @else
-                                                Pinjam Sekarang
-                                            @endif
-                                        </button>
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary fw-bold">
+                                            Login untuk Pinjam
+                                        </a>
                                     @endif
-                                @else
-                                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary fw-bold">
+                                @endauth
+
+                                @guest
+                                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success fw-bold">
                                         Login untuk Pinjam
                                     </a>
-                                @endif
+                                @endguest
                             </div>
                         </div>
                     </div>
