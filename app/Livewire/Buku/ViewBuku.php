@@ -21,7 +21,8 @@ class ViewBuku extends Component
 
 
     public function pinjamBuku($bookId)
-    {
+    {   
+        
         $user = auth()->user();
 
         // Cek apakah user sudah pinjam buku ini dan belum dikembalikan
@@ -65,8 +66,11 @@ class ViewBuku extends Component
             'tanggal_kembali' => null,
         ]);
 
-        session()->flash('message', 'Buku berhasil dipinjam!');
-        return redirect()->back();
+        // Kirim event sukses
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'success',
+            'message' => 'Buku berhasil dipinjam! Silakan ambil di Taman Baca Balarea!'
+        ]);
     }
 
     public function kembalikanBuku($bookId)
@@ -91,8 +95,11 @@ class ViewBuku extends Component
         $book->stok += 1;
         $book->save();
 
-        session()->flash('message', 'Buku berhasil dikembalikan.');
-        return redirect()->back();
+        // Kirim event sukses
+        $this->dispatch('showAlertKembali', [
+            'type' => 'success',
+            'message' => 'Silakan kembalikan ke Taman Baca Balarea!'
+        ]);
     }
 
     public function render()

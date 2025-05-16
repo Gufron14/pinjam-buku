@@ -42,6 +42,7 @@
                                 <a href="{{ route('daftar-buku') }}" class="btn btn-secondary">Kembali</a>
                                 @php
                                     $user = auth()->user();
+                                    $pinjamAktif = 0;
                                     $sudahDipinjam = false;
 
                                     if ($user) {
@@ -50,6 +51,12 @@
                                             ->whereNull('tanggal_kembali')
                                             ->exists();
                                     }
+
+                                    $pinjamanAktif = \App\Models\LoanHistory::where('id_user', $user->id)
+                                        ->whereNull('tanggal_kembali')
+                                        ->count();
+
+                                    $tidakBisaPinjam = $sudahDipinjam || $pinjamanAktif >= 2;
                                 @endphp
 
                                 @if ($user)
@@ -60,8 +67,13 @@
                                         </button>
                                     @else
                                         <button type="submit" wire:click="pinjamBuku({{ $buku->id_buku }})"
-                                            class="btn btn-sm btn-outline-success fw-bold">
-                                            Pinjam Sekarang
+                                            class="btn btn-sm btn-outline-success fw-bold"
+                                            @if ($tidakBisaPinjam) disabled @endif>
+                                            @if ($pinjamanAktif >= 2)
+                                                Maks. 2 Buku Dipinjam
+                                            @else
+                                                Pinjam Sekarang
+                                            @endif
                                         </button>
                                     @endif
                                 @else
@@ -75,4 +87,37 @@
                 </div>
             </div>
         </div>
+
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                document.addEventListener('livewire:initialized', function() {
+                    // Untuk Livewire 3, gunakan event listener yang benar
+                    Livewire.on('showAlertPinjam', (data) => {
+                        Swal.fire({
+                            icon: data[0].type,
+                            title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
+                            text: data[0].message,
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
+                    });
+                });
+            </script>
+            <script>
+                document.addEventListener('livewire:initialized', function() {
+                    // Untuk Livewire 3, gunakan event listener yang benar
+                    Livewire.on('showAlertKembali', (data) => {
+                        Swal.fire({
+                            icon: data[0].type,
+                            title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
+                            text: data[0].message,
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
+                    });
+                });
+            </script>
+        @endpush
+
     </div>

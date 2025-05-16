@@ -8,6 +8,7 @@ File: Main Js File
 */
 
 // import './bootstrap';
+const Swal = require('sweetalert2')
 
 (function ($) {
 

@@ -225,4 +225,40 @@
             transform: translateY(-2px);
         }
     </style>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('livewire:initialized', function() {
+                // Untuk Livewire 3, gunakan event listener yang benar
+                Livewire.on('showAlertPinjam', (data) => {
+                    Swal.fire({
+                        icon: data[0].type,
+                        title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
+                        text: data[0].message,
+                        timer: 3000,
+                        showConfirmButton: true
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('livewire:initialized', function() {
+                // Untuk Livewire 3, gunakan event listener yang benar
+                Livewire.on('showAlertKembali', (data) => {
+                    Swal.fire({
+                        icon: data[0].type,
+                        title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
+                        text: data[0].message,
+                        timer: 3000,
+                        showConfirmButton: true
+                    });
+                });
+            });
+        </script>
+    @endpush
+
+
+
+
 </div>
