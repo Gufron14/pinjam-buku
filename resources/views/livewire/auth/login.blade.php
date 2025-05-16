@@ -8,7 +8,7 @@
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h3 class="mb-3 fw-bold">Login SiJambu</h3>
+                        <h3 class="mb-3 fw-bold">Login TaBaBa</h3>
                         @if (session()->has('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
@@ -36,7 +36,7 @@
                                 @enderror
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <button type="submit" class="btn btn-primary fw-bold">Login</button>
+                                <button type="submit" class="btn btn-success fw-bold">Login</button>
                                 <a href="{{ route('register') }}" class="text-decoration-none">Belum punya akun? Daftar</a>
                             </div>
                         </form>

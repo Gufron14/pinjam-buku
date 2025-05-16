@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container p-2">
-        <a class="navbar-brand fw-bold" href="#">Taman Baca Balarea</a>
+        <a class="navbar-brand fw-bold" href="{{ route('/') }}">📗Jambu TaBaBa</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -27,8 +27,8 @@
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('asset/img/user.png') }}"
-                            onerror="this.onerror=null; this.src='{{ asset('asset/img/user.png') }}'" class="rounded-circle" width="36px" height="36px"
+                        <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/img/user.png') }}"
+                            onerror="this.onerror=null; this.src='{{ asset('assets/img/user.png') }}'" class="rounded-circle" width="36px" height="36px"
                             style="object-fit: cover;" alt="Avatar">
 
                     </a>

@@ -29,7 +29,7 @@
                                         class="rounded-circle p-1 bg-primary" width="110" height="110"
                                         style="object-fit: cover;">
                                 @else
-                                    <img src="{{ asset('asset/img/user.png') }}" alt="{{ $name }}"
+                                    <img src="{{ asset('assets/img/user.png') }}" alt="{{ $name }}"
                                         class="rounded-circle p-1 bg-primary" width="110" height="110"
                                         style="object-fit: cover;">
                                 @endif
