@@ -75,10 +75,10 @@ class UserSeeder extends Seeder
 
         // Create Regular User
         $user = User::create([
-            'name' => 'User Taman Baca',
-            'email' => 'user@tamanbaca.com',
+            'name' => 'Egi Hamdani',
+            'email' => 'egi@gmail.com',
             'password' => Hash::make('password'),
-            'alamat' => 'Jl. Kebon Jeruk No. 123',
+            'alamat' => 'Cicalengka, Kab. Bandung, Jawa Barat',
             'no_telepon' => '08123456789',
             'jenis_kelamin' => 'Laki-laki',
         ]);

@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Type;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class BookSeeder extends Seeder
 {
@@ -17,13 +18,20 @@ class BookSeeder extends Seeder
      */
     public function run(): void
     {
+        // Disable foreign key checks before truncating
+        Schema::disableForeignKeyConstraints();
+        
         // Clear existing books
         DB::table('books')->truncate();
+        
+        // Re-enable foreign key checks
+        Schema::enableForeignKeyConstraints();
 
         // Get category IDs
         $fiksiId = Categories::where('nama_kategori', 'Fiksi')->first()->id_kategori;
         $nonFiksiId = Categories::where('nama_kategori', 'Non-Fiksi')->first()->id_kategori;
 
+        // Rest of your code remains the same...
         // Get genre IDs
         $romansaId = Genre::where('nama_genre', 'Romansa')->first()->id_genre;
         $fantasiId = Genre::where('nama_genre', 'Fantasi')->first()->id_genre;
@@ -48,6 +56,7 @@ class BookSeeder extends Seeder
         $lainnyaId = Type::where('nama_jenis', 'Lainnya')->first()->id_jenis;
 
         // List of 20 famous Indonesian books
+        // List of 20 famous Indonesian books
         $books = [
             [
                 'judul' => 'Laskar Pelangi',
@@ -56,7 +65,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Bumi Manusia',
@@ -65,7 +74,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Ayat-Ayat Cinta',
@@ -74,7 +83,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $romansaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Ronggeng Dukuh Paruk',
@@ -83,7 +92,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Dilan 1990',
@@ -92,7 +101,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $romansaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Filosofi Kopi',
@@ -101,7 +110,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $cerpenId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Sang Pemimpi',
@@ -110,7 +119,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Perahu Kertas',
@@ -119,7 +128,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $romansaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Negeri 5 Menara',
@@ -128,7 +137,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Tenggelamnya Kapal Van Der Wijck',
@@ -137,7 +146,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $romansaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Cantik Itu Luka',
@@ -146,7 +155,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Pulang',
@@ -155,7 +164,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Saman',
@@ -164,7 +173,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Lelaki Harimau',
@@ -173,7 +182,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fantasiId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Supernova: Kesatria, Putri, dan Bintang Jatuh',
@@ -182,7 +191,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiIlmiahId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Laut Bercerita',
@@ -191,7 +200,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Gadis Pantai',
@@ -200,7 +209,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Sepotong Senja untuk Pacarku',
@@ -209,7 +218,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $romansaId,
                 'id_jenis' => $cerpenId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Manusia Setengah Salmon',
@@ -218,7 +227,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $nonFiksiId,
                 'id_genre' => $nonFiksiLainnyaId,
                 'id_jenis' => $lainnyaId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
             [
                 'judul' => 'Jejak Langkah',
@@ -227,7 +236,7 @@ class BookSeeder extends Seeder
                 'id_kategori' => $fiksiId,
                 'id_genre' => $fiksiLainnyaId,
                 'id_jenis' => $novelId,
-                'stok' => rand(5, 50)
+                'stok' => rand(1, 10)
             ],
         ];
 

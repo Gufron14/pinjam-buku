@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Carbon\Carbon;
-use App\Models\Book;
-use App\Models\User;
-use App\Models\LoanHistory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,51 +13,69 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get a user (assuming you have users in your database)
-        // $user = User::first();
+        // Temporarily disable foreign key checks
+        Schema::disableForeignKeyConstraints();
         
-        // if (!$user) {
-        //     // Create a user if none exists
-        //     $user = User::create([
-        //         'name' => 'Test User',
-        //         'email' => 'test@example.com',
-        //         'password' => bcrypt('password'),
-        //     ]);
-        // }
+        // Clear loan_histories table first (since it references books)
+        DB::table('loan_histories')->truncate();
         
-        // Get some books (assuming you have books in your database)
-        $books = Book::take(3)->get();
+        // Run the seeders in the correct order
+        $this->call([
+            UserSeeder::class,
+            CategorySeeder::class,
+            GenreSeeder::class,
+            TypeSeeder::class,
+            BookSeeder::class,
+        ]);
+        
+        // Re-enable foreign key checks
+        Schema::enableForeignKeyConstraints();
+        
+        // Now seed the loan histories
+        $this->seedLoanHistories();
+    }
+    
+    /**
+     * Seed loan histories after all other tables are seeded
+     */
+    private function seedLoanHistories(): void
+    {
+        // Get a user (user with ID 2 from UserSeeder)
+        $userId = 2; // This is the regular user (Egi Hamdani)
+        
+        // Get some books
+        $books = \App\Models\Book::take(3)->get();
         
         if ($books->count() < 3) {
-            $this->command->info('Not enough books in the database. Please seed books first.');
+            $this->command->info('Not enough books in the database. Please check your book seeder.');
             return;
         }
         
         // Create 3 loan histories for the user
         // 1. A book that is currently borrowed
-        LoanHistory::create([
-            'id_user' => 2,
+        \App\Models\LoanHistory::create([
+            'id_user' => $userId,
             'id_buku' => $books[0]->id_buku,
-            'tanggal_pinjam' => Carbon::now()->subDays(5),
-            'tanggal_kembali' => Carbon::now()->addDays(7),
+            'tanggal_pinjam' => now()->subDays(5),
+            'tanggal_kembali' => now()->addDays(7),
             'status' => 'dipinjam',
         ]);
         
         // 2. A book that has been returned
-        LoanHistory::create([
-            'id_user' => 2,
+        \App\Models\LoanHistory::create([
+            'id_user' => $userId,
             'id_buku' => $books[1]->id_buku,
-            'tanggal_pinjam' => Carbon::now()->subDays(15),
-            'tanggal_kembali' => Carbon::now()->subDays(8),
+            'tanggal_pinjam' => now()->subDays(15),
+            'tanggal_kembali' => now()->subDays(8),
             'status' => 'dikembalikan',
         ]);
         
         // 3. A book that is overdue
-        LoanHistory::create([
-            'id_user' => 2,
+        \App\Models\LoanHistory::create([
+            'id_user' => $userId,
             'id_buku' => $books[2]->id_buku,
-            'tanggal_pinjam' => Carbon::now()->subDays(20),
-            'tanggal_kembali' => Carbon::now()->subDays(5),
+            'tanggal_pinjam' => now()->subDays(20),
+            'tanggal_kembali' => now()->subDays(5),
             'status' => 'terlambat',
         ]);
     }
