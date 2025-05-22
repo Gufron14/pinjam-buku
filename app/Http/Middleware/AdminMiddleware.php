@@ -16,10 +16,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->is_admin) {
-            return $next($request);
+        if (!Auth::check() || !Auth::user()->hasRole('admin')) {
+            abort(403);
         }
-        
-        return redirect()->route('/')->with('error', 'Anda tidak memiliki akses ke halaman dashboard. Silakan login');
+        return $next($request);
     }
 }
