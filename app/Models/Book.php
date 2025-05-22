@@ -33,6 +33,14 @@ class Book extends Model
         // Add other book fields as needed
     ];
 
+    /**
+     * Check if the book is available for borrowing
+     */
+    public function isAvailable()
+    {
+        // Check if the book has stock available
+        return $this->stok > 0;
+    }
 
     /**
      * Get the category that owns the book.
@@ -63,5 +71,4 @@ class Book extends Model
     {
         return $this->hasMany(LoanHistory::class, 'id_buku', 'id_buku');
     }
-
 }

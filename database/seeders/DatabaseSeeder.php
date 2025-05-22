@@ -39,7 +39,8 @@ class DatabaseSeeder extends Seeder
      * Seed loan histories after all other tables are seeded
      */
     private function seedLoanHistories(): void
-    {
+    {   
+
         // Get a user (user with ID 2 from UserSeeder)
         $userId = 2; // This is the regular user (Egi Hamdani)
         

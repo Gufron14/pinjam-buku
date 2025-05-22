@@ -61,61 +61,88 @@ class DaftarBuku extends Component
         $this->bookId = $bookId;
     }
 
-    public function pinjamBuku($bookId)
-    {
-        if (!auth()->check()) {
-            return redirect()->route('login');
-        }
-
-        $user = auth()->user();
-
-        // Cek apakah user sudah pinjam buku ini dan belum dikembalikan
-        $alreadyBorrowed = LoanHistory::where('id_user', $user->id)->where('id_buku', $bookId)->whereNull('tanggal_kembali')->exists();
-
-        if ($alreadyBorrowed) {
-            session()->flash('error', 'Kamu sudah meminjam buku ini. Kembalikan dulu sebelum pinjam lagi.');
-            return redirect()->back();
-        }
-
-        // Cek jumlah total pinjaman aktif user
-        $activeBorrowCount = LoanHistory::where('id_user', $user->id)->whereNull('tanggal_kembali')->count();
-
-        if ($activeBorrowCount >= 2) {
-            session()->flash('error', 'Kamu hanya bisa meminjam maksimal 2 buku sekaligus.');
-            return redirect()->back();
-        }
-
-        $book = Book::find($bookId);
-
-        if (!$book) {
-            session()->flash('error', 'Buku tidak ditemukan.');
-            return redirect()->back();
-        }
-
-        if ($book->stok <= 0) {
-            session()->flash('error', 'Stok buku tidak tersedia.');
-            return redirect()->back();
-        }
-
-        // Kurangi stok buku
-        $book->stok -= 1;
-        $book->save();
-
-        // Buat catatan peminjaman
-        LoanHistory::create([
-            'id_user' => $user->id,
-            'id_buku' => $bookId,
-            'status' => 'dipinjam',
-            'tanggal_pinjam' => now(),
-            'tanggal_kembali' => null,
-        ]);
-
-        // Kirim event sukses
-        $this->dispatch('showAlertPinjam', [
-            'type' => 'success',
-            'message' => 'Buku berhasil dipinjam! Silakan ambil di Taman Baca Balarea!',
-        ]);
+public function pinjamBuku($bookId)
+{
+    if (!auth()->check()) {
+        return redirect()->route('login');
     }
+
+    $user = auth()->user();
+
+    // Check if user has unpaid fines
+    if (LoanHistory::hasUnpaidFines($user->id)) {
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'error',
+            'message' => 'Anda memiliki denda yang belum dibayar. Silakan bayar denda untuk dapat meminjam buku lagi.',
+        ]);
+        return;
+    }
+
+    // Cek apakah user sudah pinjam buku ini dan belum dikembalikan
+    $alreadyBorrowed = LoanHistory::where('id_user', $user->id)
+        ->where('id_buku', $bookId)
+        ->whereNull('tanggal_kembali')
+        ->exists();
+
+    if ($alreadyBorrowed) {
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'error',
+            'message' => 'Kamu sudah meminjam buku ini. Kembalikan dulu sebelum pinjam lagi.',
+        ]);
+        return;
+    }
+
+    // Cek jumlah total pinjaman aktif user
+    $activeBorrowCount = LoanHistory::where('id_user', $user->id)
+        ->whereNull('tanggal_kembali')
+        ->count();
+
+    if ($activeBorrowCount >= 2) {
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'error',
+            'message' => 'Kamu hanya bisa meminjam maksimal 2 buku sekaligus.',
+        ]);
+        return;
+    }
+
+    $book = Book::find($bookId);
+
+    if (!$book) {
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'error',
+            'message' => 'Buku tidak ditemukan.',
+        ]);
+        return;
+    }
+
+    if ($book->stok <= 0) {
+        $this->dispatch('showAlertPinjam', [
+            'type' => 'error',
+            'message' => 'Stok buku tidak tersedia.',
+        ]);
+        return;
+    }
+
+    // Kurangi stok buku
+    $book->stok -= 1;
+    $book->save();
+
+    // Buat catatan peminjaman
+    LoanHistory::create([
+        'id_user' => $user->id,
+        'id_buku' => $bookId,
+        'status' => 'dipinjam',
+        'tanggal_pinjam' => now(),
+        'tanggal_kembali' => null,
+    ]);
+
+    // Kirim event sukses
+    $this->dispatch('showAlertPinjam', [
+        'type' => 'success',
+        'message' => 'Buku berhasil dipinjam! Silakan ambil di Taman Baca Balarea!',
+    ]);
+}
+
 
     public function kembalikanBuku($bookId)
     {

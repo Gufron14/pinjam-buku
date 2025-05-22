@@ -1,5 +1,5 @@
 <div>
-    <div class="container col-xxl-8 px-4 py-4">
+    <div class="container col-xxl-8">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
             <div class="col-10 col-sm-8 col-lg-6">
                 <img src="https://rencanamu.id/assets/file_uploaded/editor/1490954042-o-reading-.jpg"

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container p-2">
-        <a class="navbar-brand fw-bold" href="{{ route('/') }}">📗Jambu TaBaBa</a>
+        <a class="navbar-brand fw-bold" href="{{ route('/') }}"> <span class="me-2"><img src="{{ asset('assets/img/read.png') }}" alt="" width="30px"></span> Jambu TaBaBa</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
