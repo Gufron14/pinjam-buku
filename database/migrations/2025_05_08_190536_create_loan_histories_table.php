@@ -16,13 +16,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_buku');
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali')->nullable();
-            $table->enum('status', ['dipinjam', 'dikembalikan', 'terlambat'])->default('dipinjam');
+            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'terlambat', 'selesai'])->default('pending');
+            $table->string('bukti_pinjam')->nullable();
+            $table->string('bukti_kembali')->nullable();
             $table->decimal('denda', 10, 2)->default(0);
             $table->boolean('denda_dibayar')->default(false);
-            $table->string('bukti_pembayaran')->nullable();
             $table->boolean('konfirmasi_admin')->default(false);
             $table->timestamps();
-
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_buku')->references('id_buku')->on('books')->onDelete('cascade');
         });

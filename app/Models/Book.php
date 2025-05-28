@@ -30,7 +30,6 @@ class Book extends Model
         'stok',
         'penulis',
         'tahun_terbit',
-        // Add other book fields as needed
     ];
 
     /**
@@ -38,7 +37,6 @@ class Book extends Model
      */
     public function isAvailable()
     {
-        // Check if the book has stock available
         return $this->stok > 0;
     }
 
@@ -66,9 +64,27 @@ class Book extends Model
         return $this->belongsTo(Type::class, 'id_jenis', 'id_jenis');
     }
 
-    // Add this method to the Book model if it doesn't exist
+    /**
+     * Get loan histories for this book
+     */
     public function loanHistories()
     {
         return $this->hasMany(LoanHistory::class, 'id_buku', 'id_buku');
+    }
+
+    /**
+     * Get current borrowers count
+     */
+    public function getCurrentBorrowersCount()
+    {
+        return $this->loanHistories()->where('status', 'dipinjam')->count();
+    }
+
+    /**
+     * Get available stock
+     */
+    public function getAvailableStock()
+    {
+        return $this->stok - $this->getCurrentBorrowersCount();
     }
 }

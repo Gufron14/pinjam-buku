@@ -3,12 +3,13 @@
 
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="{{url('index')}}" class="logo logo-dark">
+        <a href="{{ route('dashboard') }}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
+                <img src="{{ URL::asset('/assets/img/read.png') }}" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="20">
+                <img src="{{ URL::asset('/assets/img/read.png') }}" alt="" height="20">
+                <span class="ms-2 fw-bold">Jambu TaBaBa</span>
             </span>
         </a>
 
@@ -35,86 +36,49 @@
                 <li class="menu-title">@lang('translation.Menu')</li>
 
                 <li>
-                    <a href="{{url('index')}}">
-                        <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end">01</span>
+                    <a href="{{ route('dashboard') }}" class="waves-effect">
+                        <i class="uil-home-alt"></i>
                         <span>@lang('translation.Dashboard')</span>
                     </a>
                 </li>
 
+                {{-- Peminjaman --}}
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uil-window-section"></i>
-                        <span>@lang('translation.Layouts')</span>
+                    <a href="{{ route('peminjaman') }}" class="waves-effect">
+                        <i class="uil-forward"></i><span class="badge rounded-pill bg-primary float-end">01</span>
+                        <span>Peminjaman</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">@lang('translation.Vertical')</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-dark-sidebar">@lang('translation.Dark_Sidebar')</a></li>
-                                <li><a href="layouts-compact-sidebar">@lang('translation.Compact_Sidebar')</a></li>
-                                <li><a href="layouts-icon-sidebar">@lang('translation.Icon_Sidebar')</a></li>
-                                <li><a href="layouts-boxed">@lang('translation.Boxed_Width')</a></li>
-                                <li><a href="layouts-preloader">@lang('translation.Preloader')</a></li>
-                                <li><a href="layouts-colored-sidebar">@lang('translation.Colored_Sidebar')</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">@lang('translation.Horizontal')</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-horizontal">@lang('translation.Horizontal')</a></li>
-                                <li><a href="layouts-hori-topbar-dark">@lang('translation.Dark_Topbar')</a></li>
-                                <li><a href="layouts-hori-boxed-width">@lang('translation.Boxed_Width')</a></li>
-                                <li><a href="layouts-hori-preloader">@lang('translation.Preloader')</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
 
-                <li class="menu-title">@lang('translation.Pages')</li>
-
+                {{-- Pengembalian --}}
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uil-user-circle"></i>
-                        <span>@lang('translation.Authentication')</span>
+                    <a href="{{ route('pengembalian') }}" class="waves-effect">
+                        <i class="uil-backward"></i><span class="badge rounded-pill bg-primary float-end">01</span>
+                        <span>Pengembalian</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="auth-login">@lang('translation.Login')</a></li>
-                        <li><a href="auth-register">@lang('translation.Register')</a></li>
-                        <li><a href="auth-recoverpw">@lang('translation.Recover_Password')</a></li>
-                        <li><a href="auth-lock-screen">@lang('translation.Lock_Screen')</a></li>
-                    </ul>
                 </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uil-file-alt"></i>
-                        <span>@lang('translation.Utility')</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="pages-starter">@lang('translation.Starter_Page')</a></li>
-                        <li><a href="pages-maintenance">@lang('translation.Maintenance')</a></li>
-                        <li><a href="pages-comingsoon">@lang('translation.Coming_Soon')</a></li>
-                        <li><a href="pages-404">@lang('translation.Error_404')</a></li>
-                        <li><a href="pages-500">@lang('translation.Error_500')</a></li>
-                    </ul>
-                </li>
+                <li class="menu-title">Kelola</li>
 
+                {{-- Buku --}}
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uil-share-alt"></i>
-                        <span>@lang('translation.Multi_Level')</span>
+                    <a href="{{ route('kelola-buku') }}" class="waves-effect">
+                        <i class="uil-books"></i>
+                        <span>Kelola Buku</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="javascript: void(0);">@lang('translation.Level_1.1')</a></li>
-                        <li><a href="javascript: void(0);" class="has-arrow">@lang('translation.Level_1.2')</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="javascript: void(0);">@lang('translation.Level_2.1')</a></li>
-                                <li><a href="javascript: void(0);">@lang('translation.Level_2.2')</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
-
+                <li>
+                    <a href="{{ route('kelola-denda') }}" class="waves-effect">
+                        <i class="uil-user-times"></i>
+                        <span>Kelola Denda</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('kelola-member') }}" class="waves-effect">
+                        <i class="uil-users-alt"></i>
+                        <span>Kelola Member</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->

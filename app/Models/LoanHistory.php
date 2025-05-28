@@ -19,6 +19,11 @@ class LoanHistory extends Model
         'tanggal_pinjam',
         'tanggal_kembali',
         'status', // 'dipinjam', 'dikembalikan', 'terlambat'
+        'bukti_pinjam',
+        'bukti_kembali',
+        'denda',
+        'denda_dibayar',
+        'konfirmasi_admin',
     ];
 
     /**

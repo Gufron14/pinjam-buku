@@ -27,12 +27,16 @@
                             {{-- <td>{{ $history->book->category->nama_kategori ?? 'N/A' }}</td> --}}
                             <td>{{ \Carbon\Carbon::parse($history->tanggal_pinjam)->format('d M Y') }}</td>
                             <td class="text-center">
-                                @if($history->status == 'dipinjam')
+                                @if($history->status == 'pending')
+                                    <span class="badge bg-secondary">Menunggu</span>
+                                @elseif($history->status == 'dipinjam')
                                     <span class="badge bg-primary">Dipinjam</span>
                                 @elseif($history->status == 'dikembalikan')
-                                    <span class="badge bg-success">Dikembalikan</span>
+                                    <span class="badge bg-warning">Dikembalikan</span>
                                 @elseif($history->status == 'terlambat')
                                     <span class="badge bg-danger">Terlambat</span>
+                                @elseif($history->status == 'selesai')
+                                    <span class="badge bg-success">Selesai</span>
                                 @endif
                             </td>
                             <td>{{ $history->tanggal_kembali ? \Carbon\Carbon::parse($history->tanggal_kembali)->format('d M Y') : 'Belum dikembalikan' }}</td>

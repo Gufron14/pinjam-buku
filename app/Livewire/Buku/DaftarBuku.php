@@ -131,7 +131,7 @@ public function pinjamBuku($bookId)
     LoanHistory::create([
         'id_user' => $user->id,
         'id_buku' => $bookId,
-        'status' => 'dipinjam',
+        'status' => 'pending',
         'tanggal_pinjam' => now(),
         'tanggal_kembali' => null,
     ]);

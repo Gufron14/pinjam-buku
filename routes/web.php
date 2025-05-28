@@ -1,14 +1,20 @@
 <?php
 
-use App\Livewire\Admin\Dashboard;
+use App\Livewire\Home;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Profil;
 use App\Livewire\Auth\Register;
-use App\Livewire\Buku\DaftarBuku;
 use App\Livewire\Buku\ViewBuku;
-use App\Livewire\Home;
+use App\Livewire\Admin\Dashboard;
+use App\Livewire\Buku\DaftarBuku;
 use App\Livewire\RiwayatPinjaman;
+use App\Livewire\Admin\KelolaBuku;
+use App\Livewire\Admin\Peminjaman;
+use App\Livewire\Admin\KelolaDenda;
+use App\Livewire\Admin\KelolaMember;
+use App\Livewire\Admin\Pengembalian;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +46,9 @@ Route::middleware('auth')->group(function () {
 // Admin
 Route::middleware('admin')->group(function(){
     Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('peminjaman', Peminjaman::class)->name('peminjaman');
+    Route::get('pengembalian', Pengembalian::class)->name('pengembalian');
+    Route::get('kelola-buku', KelolaBuku::class)->name('kelola-buku');
+    Route::get('kelola-denda', KelolaDenda::class)->name('kelola-denda');
+    Route::get('kelola-member', KelolaMember::class)->name('kelola-member');
 });
