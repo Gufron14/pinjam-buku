@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Book;
 use Livewire\Component;
+use App\Models\LoanHistory;
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
-use App\Models\LoanHistory;
-use Livewire\WithFileUploads;
-use Livewire\WithPagination;
 
 #[Title('Peminjaman Buku')]
 #[Layout('layouts.master')]
@@ -18,7 +19,6 @@ class Peminjaman extends Component
     public $bukti_kembali;
 
     public $selectedLoanId;
-    public $buktiPembayaran;
 
     public function mount()
     {
@@ -34,121 +34,135 @@ class Peminjaman extends Component
         }
     }
 
-    public function setujuiPeminjaman($loanId)
-    {
-        $this->validate(
-            [
-                'bukti_pinjam' => 'required|image|max:2048',
-            ],
-            [
-                'bukti_pinjam.required' => 'Bukti pinjam harus dilampirkan',
-                'bukti_pinjam.image' => 'File harus berupa gambar',
-                'bukti_pinjam.max' => 'Ukuran file maksimal 2MB',
-            ],
-        );
-
-        try {
-            $loan = LoanHistory::find($loanId);
-
-            if (!$loan) {
-                session()->flash('message', 'Data peminjaman tidak ditemukan.');
-                return;
-            }
-
-            if ($loan->status !== 'pending' || $loan->konfirmasi_admin) {
-                session()->flash('message', 'Status peminjaman tidak valid untuk disetujui.');
-                return;
-            }
-
-            $filename = $this->bukti_pinjam->store('bukti-pinjam', 'public');
-
-            $loan->update([
-                'konfirmasi_admin' => true,
-                'status' => 'dipinjam',
-                'bukti_pinjam' => $filename,
-            ]);
-
-            session()->flash('message', 'Peminjaman berhasil disetujui.');
-            $this->reset('bukti_pinjam');
-        } catch (\Exception $e) {
-            session()->flash('message', 'Terjadi kesalahan saat menyetujui peminjaman: ' . $e->getMessage());
-        }
-    }
-
-    public function konfirmasiPengembalian($loanId)
-    {
-        $this->validate(
-            [
-                'bukti_kembali' => 'required|image|max:2048',
-            ],
-            [
-                'bukti_kembali.required' => 'Bukti pinjam harus dilampirkan',
-                'bukti_kembali.image' => 'File harus berupa gambar',
-                'bukti_kembali.max' => 'Ukuran file maksimal 2MB',
-            ],
-        );
-
-        try {
-            $loan = LoanHistory::find($loanId);
-
-            if (!$loan) {
-                session()->flash('message', 'Data peminjaman tidak ditemukan.');
-                return;
-            }
-
-            if ($loan->status !== 'dikembalikan' || $loan->konfirmasi_admin) {
-                session()->flash('message', 'Status pengembalian tidak valid untuk disetujui.');
-                return;
-            }
-
-            $filename = $this->bukti_kembali->store('bukti-kembali', 'public');
-
-            $loan->update([
-                'status' => 'selesai',
-                'konfirmasi_admin' => true,
-                'tanggal_kembali' => now()->format('Y-m-d'),
-                'bukti_kembali' => $filename,
-            ]);
-
-            session()->flash('message', 'Peminjaman berhasil disetujui.');
-            $this->reset('bukti_kembali');
-        } catch (\Exception $e) {
-            session()->flash('message', 'Terjadi kesalahan saat menyetujui peminjaman: ' . $e->getMessage());
-        }
-    }
-
     public function tolakPeminjaman($loanId)
     {
         $loan = LoanHistory::find($loanId);
-        if ($loan && !$loan->konfirmasi_admin) {
-            $loan->delete();
+        if ($loan && $loan->status === 'pending') {
+            $loan->update(['status' => 'ditolak']);
 
-            session()->flash('message', 'Peminjaman berhasil ditolak dan dihapus.');
+            session()->flash('message', 'Peminjaman berhasil ditolak.');
         }
     }
 
-    public function lihatBuktiPembayaran($loanId)
+    public function setSelectedLoan($loanId)
     {
         $this->selectedLoanId = $loanId;
-        $loan = LoanHistory::find($loanId);
-        $this->buktiPembayaran = $loan ? $loan->bukti_pembayaran : null;
+        $this->bukti_pinjam = null;
     }
 
-    public function konfirmasiPembayaran()
+    // Fungsi untuk mengonfirmasi peminjaman buku
+    public function konfirmasiPeminjaman()
     {
-        if ($this->selectedLoanId) {
-            $loan = LoanHistory::find($this->selectedLoanId);
-            if ($loan) {
-                $loan->konfirmasi_admin = true;
-                $loan->status = 'dikembalikan';
-                $loan->tanggal_kembali = now()->format('Y-m-d');
-                $loan->save();
+        $this->validate([
+            'bukti_pinjam' => 'required|image|max:2048',
+        ]);
 
-                session()->flash('message', 'Pembayaran denda berhasil dikonfirmasi.');
-                $this->reset(['selectedLoanId', 'buktiPembayaran']);
+        try {
+            $loan = LoanHistory::find($this->selectedLoanId);
+            
+            if (!$loan) {
+                session()->flash('error', 'Data peminjaman tidak ditemukan.');
+                return;
             }
+
+            if ($loan->status !== 'pending') {
+                session()->flash('error', 'Peminjaman ini sudah dikonfirmasi atau tidak dalam status pending.');
+                return;
+            }
+
+            $book = Book::find($loan->id_buku);
+            if (!$book) {
+                session()->flash('error', 'Data buku tidak ditemukan.');
+                return;
+            }
+
+            // Cek apakah stok masih tersedia
+            if ($book->stok <= 0) {
+                session()->flash('error', 'Stok buku tidak tersedia.');
+                return;
+            }
+
+            // Upload bukti pinjam
+            $buktiPath = $this->bukti_pinjam->store('bukti-pinjam', 'public');
+
+            // Update status peminjaman menjadi dipinjam dan simpan bukti
+            $loan->update([
+                'status' => 'dipinjam',
+                'tanggal_pinjam' => now(),
+                'bukti_pinjam' => $buktiPath
+            ]);
+
+            // Kurangi stok buku
+            $book->decrement('stok');
+
+            session()->flash('success', 'Peminjaman berhasil dikonfirmasi. Buku sekarang dalam status dipinjam.');
+            
+            // Reset form
+            $this->selectedLoanId = null;
+            $this->bukti_pinjam = null;
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+    // Fungsi untuk mengonfirmasi pengembalian
+public function setSelectedLoanForReturn($loanId)
+{
+    $this->selectedLoanId = $loanId;
+    $this->bukti_kembali = null;
+}
+
+public function konfirmasiPengembalian()
+{
+    $this->validate([
+        'bukti_kembali' => 'required|image|max:2048',
+    ]);
+
+    try {
+        $loan = LoanHistory::find($this->selectedLoanId);
+        
+        if (!$loan) {
+            session()->flash('error', 'Data peminjaman tidak ditemukan.');
+            return;
+        }
+
+        if ($loan->status !== 'dikembalikan') {
+            session()->flash('error', 'Buku belum dalam status dikembalikan atau sudah selesai.');
+            return;
+        }
+
+        $book = Book::find($loan->id_buku);
+        
+        if (!$book) {
+            session()->flash('error', 'Data buku tidak ditemukan.');
+            return;
+        }
+
+        // Upload bukti pengembalian
+        $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
+
+        // Update status peminjaman menjadi selesai dan simpan bukti
+        $loan->update([
+            'status' => 'selesai',
+            'tanggal_kembali' => now(),
+            'bukti_kembali' => $buktiPath
+        ]);
+
+        // Kembalikan stok buku
+        $book->increment('stok');
+
+        session()->flash('success', 'Pengembalian berhasil dikonfirmasi. Status peminjaman sekarang selesai dan stok buku telah dikembalikan.');
+        
+        // Reset form
+        $this->selectedLoanId = null;
+        $this->bukti_kembali = null;
+        
+    } catch (\Exception $e) {
+        session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    }
+}
+
 
     public function peringatiPeminjam($loanId)
     {
@@ -165,6 +179,7 @@ class Peminjaman extends Component
             'dikembalikan' => '<span class="badge bg-warning">Dikembalikan</span>',
             'terlambat' => '<span class="badge bg-danger">Terlambat</span>',
             'selesai' => '<span class="badge bg-success">Selesai</span>',
+            'ditolak' => '<span class="badge bg-dark">Ditolak</span>',
             default => '<span class="badge bg-secondary">Unknown</span>',
         };
     }

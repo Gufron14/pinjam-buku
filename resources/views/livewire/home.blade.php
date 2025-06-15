@@ -1,9 +1,9 @@
 <div>
     <div class="container col-xxl-8">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-            <div class="col-10 col-sm-8 col-lg-6">
-                <img src="https://rencanamu.id/assets/file_uploaded/editor/1490954042-o-reading-.jpg"
-                    class="d-block mx-lg-auto img-fluid" alt="baca buku" loading="lazy">
+            <div class="col-10 col-sm-8 col-lg-6 gap-3">
+                <img src="{{ asset('assets/images/undraw_book-lover_f1dq.svg') }}"
+                    class="d-block mx-lg-auto img-fluid" alt="baca buku" loading="lazy" width="70%">
             </div>
             <div class="col-lg-6">
                 <h1 class=" fw-bold lh-2 mb-3 text-success">Temukan Buku Favoritmu, Gratis & Gampang di Taman Baca
@@ -13,12 +13,12 @@
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start">
 
                     @guest
-                        <a href="{{ route('login') }}" class="btn btn-success px-4 me-md-2 fw-bold">👉 Mulai Pinjam
+                        <a href="{{ route('login') }}" class="btn btn-success px-4 me-md-2 fw-bold btn-lg">👉 Mulai Pinjam
                             Sekarang</a>
                     @endguest
 
                     @auth
-                        <a href="{{ route('daftar-buku') }}" class="btn btn-success px-4 me-md-2 fw-bold">Cari Buku</a>
+                        <a href="{{ route('daftar-buku') }}" class="btn btn-success px-4 me-md-2 fw-bold btn-lg">🔍 Cari Buku</a>
                     @endauth
 
                 </div>
@@ -28,8 +28,8 @@
             <h3 class="fw-bold text-success text-center mb-3">🌿 Tentang Taman Baca Balarea</h3>
             <div class="d-flex gap-5 align-items-center">
                 <div class="col">
-                    <img src="https://cdn.antaranews.com/cache/1200x800/2023/02/08/anak-membaca-di-TBM.jpeg"
-                        alt="taman baca" width="100%">
+                    <img src="{{ asset('assets/images/undraw_relaxed-reading_wfkr.svg') }}" class="img-fluid"
+                        alt="taman baca" width="80%">
                 </div>
                 <div class="col">
                     <p class="lead"><b>Taman Baca Balarea (TaBaBa)</b> adalah ruang literasi terbuka yang berdiri
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="mb-5 text-center">
-            <h3 class="fw-bold text-success text-center mb-3">🔥 Buku yang Paling Diminati</h3>
+            <h3 class="fw-bold text-success text-center mb-4">🔥 Buku yang Paling Diminati</h3>
             <div class="row mb-3">
                 @forelse ($buku as $item)
                     <div class="col">
@@ -80,8 +80,8 @@
             <h3 class="fw-bold text-success text-center mb-3">🤝 Mari Dukung Gerakan Literasi!</h3>
             <div class="d-flex gap-5 align-items-center">
                 <div class="col">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrBEQ92-jfpKrqoAlWMlOsoAUXzxFlTdbbzg&s"
-                        alt="taman baca" width="100%">
+                    <img src="{{ asset('assets/images/undraw_reading-time_gcvc.svg') }}" class="img-fluid"
+                        alt="taman baca" width="80%">
                 </div>
                 <div class="col">
                     <p class="lead">Ingin ikut berkontribusi? Kamu bisa menjadi relawan, menyumbangkan buku, atau sekadar menyebarkan

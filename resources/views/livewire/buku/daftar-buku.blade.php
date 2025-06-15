@@ -112,56 +112,68 @@
                     <div class="card-footer bg-white border-0 pt-0">
                         <div class="d-grid gap-2">
                             @auth
-                                
                                 @php
                                     $user = auth()->user();
-                                    $pinjamAktif = 0;
-                                    $sudahDipinjam = false;
+                                    
+                                    // Cek status peminjaman user untuk buku ini
+                                    $statusPeminjaman = \App\Models\LoanHistory::where('id_user', $user->id)
+                                        ->where('id_buku', $book->id_buku)
+                                        ->whereIn('status', ['pending', 'dipinjam', 'dikembalikan'])
+                                        ->first();
 
-                                    if ($user) {
-                                        $sudahDipinjam = \App\Models\LoanHistory::where('id_user', $user->id)
-                                            ->where('id_buku', $book->id_buku)
-                                            ->whereNull('tanggal_kembali')
-                                            ->exists();
-                                    }
-
+                                    // Hitung total pinjaman aktif user
                                     $pinjamanAktif = \App\Models\LoanHistory::where('id_user', $user->id)
-                                        ->whereNull('tanggal_kembali')
+                                        ->whereIn('status', ['pending', 'dipinjam', 'dikembalikan'])
                                         ->count();
 
-                                    $tidakBisaPinjam = $sudahDipinjam || $pinjamanAktif >= 2;
+                                    // Hitung stok tersedia (stok asli - yang sedang pending/dipinjam)
+                                    $pendingLoans = \App\Models\LoanHistory::where('id_buku', $book->id_buku)
+                                        ->whereIn('status', ['pending', 'dipinjam'])
+                                        ->count();
+                                    $stokTersedia = $book->stok;
                                 @endphp
 
-                                @if ($user)
-                                    @if ($sudahDipinjam)
-                                        <button type="submit" wire:click="kembalikanBuku({{ $book->id_buku }})"
-                                            class="btn btn-sm btn-outline-danger fw-bold">
-                                            Kembalikan Buku
+                                @if ($statusPeminjaman)
+                                    @if ($statusPeminjaman->status === 'pending')
+                                        <button class="btn btn-sm btn-warning fw-bold" disabled>
+                                            <i class="bi bi-clock me-1"></i>Menunggu Konfirmasi
                                         </button>
-                                    @else
-                                        <button type="submit" wire:click="pinjamBuku({{ $book->id_buku }})"
-                                            class="btn btn-sm btn-outline-success fw-bold"
-                                            @if ($tidakBisaPinjam) disabled @endif>
-                                            @if ($pinjamanAktif >= 2)
-                                                Maks. 2 Buku Dipinjam
-                                            @else
-                                                Pinjam Sekarang
-                                            @endif
+                                    @elseif ($statusPeminjaman->status === 'dipinjam')
+                                        <button type="button" wire:click="kembalikanBuku({{ $book->id_buku }})"
+                                            class="btn btn-sm btn-outline-danger fw-bold">
+                                            <i class="bi bi-arrow-return-left me-1"></i>Kembalikan Buku
+                                        </button>
+                                    @elseif ($statusPeminjaman->status === 'dikembalikan')
+                                        <button class="btn btn-sm btn-info fw-bold" disabled>
+                                            <i class="bi bi-clock me-1"></i>Menunggu Konfirmasi Pengembalian
                                         </button>
                                     @endif
                                 @else
-                                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary fw-bold">
-                                        Login untuk Pinjam
-                                    </a>
+                                    @if ($pinjamanAktif >= 2)
+                                        <button class="btn btn-sm btn-secondary fw-bold" disabled>
+                                            <i class="bi bi-exclamation-triangle me-1"></i>Maks. 2 Buku Dipinjam
+                                        </button>
+                                    @elseif ($stokTersedia <= 0)
+                                        <button class="btn btn-sm btn-secondary fw-bold" disabled>
+                                            <i class="bi bi-x-circle me-1"></i>Stok Tidak Tersedia
+                                        </button>
+                                    @else
+                                        <button type="button" wire:click="pinjamBuku({{ $book->id_buku }})"
+                                            class="btn btn-sm btn-outline-success fw-bold">
+                                            <i class="bi bi-book me-1"></i>Pinjam Sekarang
+                                        </button>
+                                    @endif
                                 @endif
                             @endauth
 
                             @guest
                                 <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success fw-bold">
-                                    Login untuk Pinjam
+                                    <i class="bi bi-person me-1"></i>Login untuk Pinjam
                                 </a>
                             @endguest
                         </div>
+                        
+
                     </div>
                 </div>
             </div>
@@ -230,8 +242,21 @@
             transition: all 0.2s;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
+        }
+
+        /* Status button styling */
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-info {
+            background-color: #0dcaf0;
+            border-color: #0dcaf0;
+            color: #000;
         }
     </style>
 
@@ -239,35 +264,30 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             document.addEventListener('livewire:initialized', function() {
-                // Untuk Livewire 3, gunakan event listener yang benar
+                // Event listener untuk alert peminjaman
                 Livewire.on('showAlertPinjam', (data) => {
                     Swal.fire({
                         icon: data[0].type,
                         title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
                         text: data[0].message,
-                        timer: 3000,
-                        showConfirmButton: true
+                        timer: 4000,
+                        showConfirmButton: true,
+                        confirmButtonText: 'OK'
                     });
                 });
-            });
-        </script>
-        <script>
-            document.addEventListener('livewire:initialized', function() {
-                // Untuk Livewire 3, gunakan event listener yang benar
+
+                // Event listener untuk alert pengembalian
                 Livewire.on('showAlertKembali', (data) => {
                     Swal.fire({
                         icon: data[0].type,
                         title: data[0].type === 'success' ? 'Berhasil!' : 'Perhatian!',
                         text: data[0].message,
-                        timer: 3000,
-                        showConfirmButton: true
+                        timer: 4000,
+                        showConfirmButton: true,
+                        confirmButtonText: 'OK'
                     });
                 });
             });
         </script>
     @endpush
-
-
-
-
 </div>

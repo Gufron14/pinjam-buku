@@ -38,7 +38,7 @@
         <div class="d-flex justify-content-between align-items-middle mx-5 py-3">
             <div>
                 <h5 class="fw-bold">Taman Baca Balarea</h5>
-                Desa Tanjungwangi, Kecamatan Cicalengka, Kabupaten Bandung, Jawa Barat
+                <small>Desa Tanjungwangi, Kecamatan Cicalengka, Kabupaten Bandung, Jawa Barat</small> 
             </div>
             <div class="align-self-center">
                 <div class="fs-5">
@@ -47,7 +47,7 @@
                         href="https://www.instagram.com/hypecustom.project?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><i
                             class="bi bi-instagram"></i></a>
                 </div>
-                © 2025 Taman Baca Balarea
+                <small>© 2025 Taman Baca Balarea</small> 
             </div>
         </div>
     </footer>

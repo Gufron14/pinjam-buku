@@ -56,7 +56,7 @@
                                 <button class="btn btn-warning btn-sm" wire:click="openEditModal({{ $book->id_buku }})">
                                     Edit
                                 </button>
-                                <button class="btn btn-danger btn-sm" wire:click="delete({{ $book->id_buku }})" wire.confirm="Apakah Anda yakin ingin menghapus buku ini?">
+                                <button class="btn btn-danger btn-sm" wire:click="delete({{ $book->id_buku }})" wire:confirm="Apakah Anda yakin ingin menghapus buku ini?">
                                     Hapus
                                 </button>
                                 <button class="btn btn-primary btn-sm" wire:click="openViewModal({{ $book->id_buku }})">

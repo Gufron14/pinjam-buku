@@ -23,7 +23,6 @@ class LoanHistory extends Model
         'bukti_kembali',
         'denda',
         'denda_dibayar',
-        'konfirmasi_admin',
     ];
 
     /**
@@ -61,7 +60,9 @@ class LoanHistory extends Model
             ->where(function ($query) {
                 $query->where('denda', '>', 0)->where(function ($q) {
                     $q->where('denda_dibayar', false)->orWhere(function ($q2) {
-                        $q2->where('denda_dibayar', true)->where('konfirmasi_admin', false);
+                        $q2->where('denda_dibayar', true)
+                        // ->where('konfirmasi_admin', false)
+                        ;
                     });
                 });
             })

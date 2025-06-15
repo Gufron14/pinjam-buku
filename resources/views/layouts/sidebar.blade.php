@@ -45,18 +45,18 @@
                 {{-- Peminjaman --}}
                 <li>
                     <a href="{{ route('peminjaman') }}" class="waves-effect">
-                        <i class="uil-forward"></i><span class="badge rounded-pill bg-primary float-end">01</span>
+                        <i class="uil-fast-mail"></i><span class="badge rounded-pill bg-primary float-end">01</span>
                         <span>Peminjaman</span>
                     </a>
                 </li>
 
                 {{-- Pengembalian --}}
-                <li>
+                {{-- <li>
                     <a href="{{ route('pengembalian') }}" class="waves-effect">
                         <i class="uil-backward"></i><span class="badge rounded-pill bg-primary float-end">01</span>
                         <span>Pengembalian</span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="menu-title">Kelola</li>
 
