@@ -62,7 +62,7 @@
                     </a>
                 </li> --}}
 
-                <li class="menu-title">Kelola</li>
+                {{-- <li class="menu-title">Kelola</li> --}}
 
                 {{-- Buku --}}
                 <li>
@@ -80,7 +80,7 @@
                 <li>
                     <a href="{{ route('kelola-member') }}" class="waves-effect">
                         <i class="uil-users-alt"></i>
-                        <span>Kelola Member</span>
+                        <span>Daftar Member</span>
                     </a>
                 </li>
             </ul>

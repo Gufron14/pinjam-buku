@@ -28,6 +28,9 @@ class KelolaBuku extends Component
     public $stok;
     public $penulis;
     public $tahun_terbit;
+        public $nama_kategori;
+    public $nama_jenis;
+    public $nama_genre;
     
     // Modal state
     public $modalMode = 'create'; // create, edit, view
@@ -139,6 +142,52 @@ class KelolaBuku extends Component
 
         $this->loadData();
         $this->dispatch('close-modal');
+    }
+
+        // Tambahkan methods untuk save kategori, jenis, genre
+    public function saveKategori()
+    {
+        $this->validate([
+            'nama_kategori' => 'required|string|max:255|unique:categories,nama_kategori',
+        ]);
+
+        Categories::create([
+            'nama_kategori' => $this->nama_kategori,
+        ]);
+
+        $this->nama_kategori = '';
+        $this->loadData();
+        session()->flash('message', 'Kategori berhasil ditambahkan!');
+    }
+
+    public function saveJenis()
+    {
+        $this->validate([
+            'nama_jenis' => 'required|string|max:255|unique:types,nama_jenis',
+        ]);
+
+        Type::create([
+            'nama_jenis' => $this->nama_jenis,
+        ]);
+
+        $this->nama_jenis = '';
+        $this->loadData();
+        session()->flash('message', 'Jenis berhasil ditambahkan!');
+    }
+
+    public function saveGenre()
+    {
+        $this->validate([
+            'nama_genre' => 'required|string|max:255|unique:genres,nama_genre',
+        ]);
+
+        Genre::create([
+            'nama_genre' => $this->nama_genre,
+        ]);
+
+        $this->nama_genre = '';
+        $this->loadData();
+        session()->flash('message', 'Genre berhasil ditambahkan!');
     }
 
     public function getJumlahPeminjam($bookId)

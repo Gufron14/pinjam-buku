@@ -54,13 +54,15 @@
                             <td>{{ $this->getStokAkhir($book->id_buku) }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-warning btn-sm" wire:click="openEditModal({{ $book->id_buku }})" title="Edit Buku">
-                                        <i class="fas fa-edit"></i>                                    </button>
+                                    <button class="btn btn-warning btn-sm"
+                                        wire:click="openEditModal({{ $book->id_buku }})" title="Edit Buku">
+                                        <i class="fas fa-edit"></i> </button>
                                     <button class="btn btn-danger btn-sm" wire:click="delete({{ $book->id_buku }})"
                                         wire:confirm="Apakah Anda yakin ingin menghapus buku ini?" title="Hapus Buku">
-                                        <i class="fas fa-trash"></i>                                    </button>
-                                    <button class="btn btn-primary btn-sm" wire:click="openViewModal({{ $book->id_buku }})" title="Lihat Detail Buku">
-                                        <i class="fas fa-eye"></i>                                    </button>
+                                        <i class="fas fa-trash"></i> </button>
+                                    <button class="btn btn-primary btn-sm"
+                                        wire:click="openViewModal({{ $book->id_buku }})" title="Lihat Detail Buku">
+                                        <i class="fas fa-eye"></i> </button>
                                 </div>
                             </td>
                         </tr>
@@ -194,6 +196,88 @@
                     </div>
                 </div>
             </div>
+
+                        <!-- Modal untuk Kategori -->
+            <div class="modal fade" id="tambahKategoriModal" tabindex="-1" aria-labelledby="tambahKategoriModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tambahKategoriModalLabel">Tambah Kategori</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form wire:submit.prevent="saveKategori">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nama_kategori" class="form-label">Nama Kategori</label>
+                                    <input type="text" class="form-control" id="nama_kategori" wire:model="nama_kategori" required>
+                                    @error('nama_kategori')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-success">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal untuk Jenis -->
+            <div class="modal fade" id="tambahJenisModal" tabindex="-1" aria-labelledby="tambahJenisModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tambahJenisModalLabel">Tambah Jenis</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form wire:submit.prevent="saveJenis">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nama_jenis" class="form-label">Nama Jenis</label>
+                                    <input type="text" class="form-control" id="nama_jenis" wire:model="nama_jenis" required>
+                                    @error('nama_jenis')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-info">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal untuk Genre -->
+            <div class="modal fade" id="tambahGenreModal" tabindex="-1" aria-labelledby="tambahGenreModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tambahGenreModalLabel">Tambah Genre</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form wire:submit.prevent="saveGenre">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nama_genre" class="form-label">Nama Genre</label>
+                                    <input type="text" class="form-control" id="nama_genre" wire:model="nama_genre" required>
+                                    @error('nama_genre')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-warning">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
