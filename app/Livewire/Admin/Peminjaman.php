@@ -184,6 +184,31 @@ public function konfirmasiPengembalian()
         };
     }
 
+    public function getFineDetails($loan)
+{
+    if ($loan->denda > 0) {
+        $fineInfo = $loan->getFineInfo();
+        return [
+            'amount' => $loan->denda,
+            'days_overdue' => $fineInfo['days_overdue'],
+            'fine_per_day' => $fineInfo['fine_per_day'],
+            'due_date' => $fineInfo['due_date'],
+            'is_paid' => $loan->denda_dibayar,
+        ];
+    }
+    return null;
+}
+
+public function markFineAsPaid($loanId)
+{
+    $loan = LoanHistory::find($loanId);
+    if ($loan && $loan->denda > 0) {
+        $loan->update(['denda_dibayar' => true]);
+        session()->flash('success', 'Denda berhasil ditandai sebagai sudah dibayar.');
+    }
+}
+
+
     public function render()
     {
         $loans = LoanHistory::with(['user', 'book'])

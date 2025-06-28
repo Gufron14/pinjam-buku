@@ -71,16 +71,37 @@
                             <td>{!! $this->getStatusBadge($loan->status) !!}</td>
                             <td>
                                 @if ($loan->denda > 0)
-                                    Rp {{ number_format($loan->denda, 0, ',', '.') }}
-                                    @if ($loan->denda_dibayar)
-                                        <br><small class="text-success">Sudah Dibayar</small>
-                                    @else
-                                        <br><small class="text-danger">Belum Dibayar</small>
-                                    @endif
+                                    <div class="text-center">
+                                        <strong class="text-danger">Rp
+                                            {{ number_format($loan->denda, 0, ',', '.') }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ $loan->daysOverdue() }} detik × Rp 100
+                                        </small>
+                                        <br>
+                                        @if ($loan->denda_dibayar)
+                                            <span class="badge bg-success">Sudah Dibayar</span>
+                                        @else
+                                            <span class="badge bg-danger">Belum Dibayar</span>
+                                            <br>
+                                            <button class="btn btn-sm btn-outline-primary mt-1"
+                                                wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
+                                                wire:confirm="Tandai denda sebagai sudah dibayar?">
+                                                Tandai Lunas
+                                            </button>
+                                        @endif
+                                        <br>
+                                        <small class="text-muted">
+                                            Jatuh tempo:
+                                            {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->addSeconds(30)->format('d/m/Y H:i:s') }}
+                                        </small>
+                                    </div>
                                 @else
-                                    -
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
+
+
                             <td>
                                 @if ($loan->status === 'pending')
                                     {{-- Jika status pending, tampilkan button setujui dan tolak --}}

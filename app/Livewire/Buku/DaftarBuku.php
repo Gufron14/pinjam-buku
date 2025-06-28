@@ -69,13 +69,13 @@ class DaftarBuku extends Component
         $user = auth()->user();
 
         // Check if user has unpaid fines
-        if (LoanHistory::hasUnpaidFines($user->id)) {
-            $this->dispatch('showAlertPinjam', [
-                'type' => 'error',
-                'message' => 'Anda memiliki denda yang belum dibayar. Silakan bayar denda untuk dapat meminjam buku lagi.',
-            ]);
-            return;
-        }
+        // if (LoanHistory::hasUnpaidFines($user->id)) {
+        //     $this->dispatch('showAlertPinjam', [
+        //         'type' => 'error',
+        //         'message' => 'Anda memiliki denda yang belum dibayar. Silakan bayar denda untuk dapat meminjam buku lagi.',
+        //     ]);
+        //     return;
+        // }
 
         // Cek apakah user sudah pinjam buku ini dan belum selesai (pending, dipinjam, atau menunggu konfirmasi pengembalian)
         $alreadyBorrowed = LoanHistory::where('id_user', $user->id)

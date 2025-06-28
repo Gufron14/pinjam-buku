@@ -24,7 +24,7 @@ class RiwayatPinjaman extends Component
     public function mount()
     {
         // Check if user can borrow books (no unpaid fines)
-        $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
+         $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
     }
 
     public function returnBook($loanId)
