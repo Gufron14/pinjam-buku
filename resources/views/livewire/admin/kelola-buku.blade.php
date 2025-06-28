@@ -53,16 +53,15 @@
                             <td>{{ $this->getJumlahPeminjam($book->id_buku) }}</td>
                             <td>{{ $this->getStokAkhir($book->id_buku) }}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" wire:click="openEditModal({{ $book->id_buku }})">
-                                    Edit
-                                </button>
-                                <button class="btn btn-danger btn-sm" wire:click="delete({{ $book->id_buku }})"
-                                    wire:confirm="Apakah Anda yakin ingin menghapus buku ini?">
-                                    Hapus
-                                </button>
-                                <button class="btn btn-primary btn-sm" wire:click="openViewModal({{ $book->id_buku }})">
-                                    Detail
-                                </button>
+                                <div class="btn-group">
+                                    <button class="btn btn-warning btn-sm" wire:click="openEditModal({{ $book->id_buku }})" title="Edit Buku">
+                                        <i class="fas fa-edit"></i>                                    </button>
+                                    <button class="btn btn-danger btn-sm" wire:click="delete({{ $book->id_buku }})"
+                                        wire:confirm="Apakah Anda yakin ingin menghapus buku ini?" title="Hapus Buku">
+                                        <i class="fas fa-trash"></i>                                    </button>
+                                    <button class="btn btn-primary btn-sm" wire:click="openViewModal({{ $book->id_buku }})" title="Lihat Detail Buku">
+                                        <i class="fas fa-eye"></i>                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty

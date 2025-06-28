@@ -72,29 +72,9 @@
                             <td>
                                 @if ($loan->denda > 0)
                                     <div class="text-center">
-                                        <strong class="text-danger">Rp
-                                            {{ number_format($loan->denda, 0, ',', '.') }}</strong>
-                                        <br>
-                                        <small class="text-muted">
-                                            {{ $loan->daysOverdue() }} detik × Rp 100
-                                        </small>
-                                        <br>
-                                        @if ($loan->denda_dibayar)
-                                            <span class="badge bg-success">Sudah Dibayar</span>
-                                        @else
-                                            <span class="badge bg-danger">Belum Dibayar</span>
-                                            <br>
-                                            <button class="btn btn-sm btn-outline-primary mt-1"
-                                                wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
-                                                wire:confirm="Tandai denda sebagai sudah dibayar?">
-                                                Tandai Lunas
-                                            </button>
-                                        @endif
-                                        <br>
-                                        <small class="text-muted">
-                                            Jatuh tempo:
-                                            {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->addSeconds(30)->format('d/m/Y H:i:s') }}
-                                        </small>
+                                        <a href="{{ route('kelola-denda') }}" class="text-danger fw-bold h5">
+                                            Rp{{ number_format($loan->denda, 0, ',', '.') }}
+                                        </a>
                                     </div>
                                 @else
                                     <span class="text-muted">-</span>
@@ -115,35 +95,46 @@
                                         wire:confirm="Apakah Anda yakin ingin menolak peminjaman ini?">
                                         Tolak
                                     </button>
-                                @else
-                                    {{-- Jika sudah disetujui, tampilkan button-button berikut --}}
-                                    @if ($loan->status === 'dipinjam')
-                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#buktiModal"
-                                            wire:click="setSelectedLoan({{ $loan->id_pinjaman }})">
-                                            <i class="uil-eye me-1"></i>Bukti Pinjam
-                                        </button>
-                                    @endif
 
-                                    @if ($loan->status === 'terlambat' || $loan->isOverdue())
+                                    {{-- Dipinjam -> Bukti Pinjam --}}
+                                @elseif ($loan->status === 'dipinjam')
+                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#buktiModal"
+                                        wire:click="setSelectedLoan({{ $loan->id_pinjaman }})">
+                                        <i class="uil-eye me-1"></i>Bukti Pinjam
+                                    </button>
+
+                                    {{-- Dikembalikan -> Konfirmasi --}}
+                                @elseif ($loan->status === 'dikembalikan')
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#pengembalianModal"
+                                        wire:click="setSelectedLoanForReturn({{ $loan->id_pinjaman }})">
+                                        Konfirmasi
+                                    </button>
+
+                                    {{-- Selesai -> Bukti Kembali --}}
+                                @elseif ($loan->status === 'selesai')
+                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#buktiKembaliModal"
+                                        wire:click="setSelectedLoanForProof({{ $loan->id_pinjaman }})">
+                                        <i class="uil-eye me-1"></i>
+                                        Bukti Pengembalian
+                                    </button>
+
+                                    {{-- Terlambat -> Peringati, Tandai Lunas --}}
+                                @elseif ($loan->status === 'terlambat')
+                                    @if ($loan->denda_dibayar)
+                                        <span class="badge bg-success">Sudah Dibayar</span>
+                                    @else
                                         <button wire:click="peringatiPeminjam({{ $loan->id_pinjaman }})"
                                             class="btn btn-danger btn-sm">
                                             Peringati
                                         </button>
-                                    @endif
-
-                                    @if ($loan->status === 'dikembalikan')
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#pengembalianModal"
-                                            wire:click="setSelectedLoanForReturn({{ $loan->id_pinjaman }})">
-                                            Konfirmasi
+                                        <button class="btn btn-sm btn-outline-primary mt-1"
+                                            wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
+                                            wire:confirm="Tandai denda sebagai sudah dibayar?">
+                                            Tandai Lunas
                                         </button>
-                                    @endif
-
-                                    @if ($loan->status === 'selesai')
-                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#buktiKembaliModal"><i class="uil-eye me-1"></i>Bukti
-                                            Pengembalian</button>
                                     @endif
                                 @endif
                             </td>
@@ -275,6 +266,12 @@
                                     $selectedLoan = \App\Models\LoanHistory::find($selectedLoanId);
                                 @endphp
                                 @if ($selectedLoan && $selectedLoan->bukti_kembali)
+                                                                    <div class="mb-3">
+                                        <strong>Peminjam:</strong> {{ $selectedLoan->user->name ?? 'N/A' }}<br>
+                                        <strong>Buku:</strong> {{ $selectedLoan->book->judul ?? 'N/A' }}<br>
+                                        <strong>Tanggal Pinjam:</strong>
+                                        {{ \Carbon\Carbon::parse($selectedLoan->tanggal_pinjam)->format('d/m/Y H:i') }}
+                                    </div>
                                     <img src="{{ asset('storage/' . $selectedLoan->bukti_kembali) }}"
                                         alt="Bukti Kembali" class="img-fluid rounded"
                                         style="max-width: 100%; height: auto;">

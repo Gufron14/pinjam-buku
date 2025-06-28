@@ -59,7 +59,7 @@ class Peminjaman extends Component
 
         try {
             $loan = LoanHistory::find($this->selectedLoanId);
-            
+
             if (!$loan) {
                 session()->flash('error', 'Data peminjaman tidak ditemukan.');
                 return;
@@ -89,80 +89,82 @@ class Peminjaman extends Component
             $loan->update([
                 'status' => 'dipinjam',
                 'tanggal_pinjam' => now(),
-                'bukti_pinjam' => $buktiPath
+                'bukti_pinjam' => $buktiPath,
             ]);
 
             // Kurangi stok buku
             $book->decrement('stok');
 
             session()->flash('success', 'Peminjaman berhasil dikonfirmasi. Buku sekarang dalam status dipinjam.');
-            
+
             // Reset form
             $this->selectedLoanId = null;
             $this->bukti_pinjam = null;
-            
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
     // Fungsi untuk mengonfirmasi pengembalian
-public function setSelectedLoanForReturn($loanId)
-{
-    $this->selectedLoanId = $loanId;
-    $this->bukti_kembali = null;
-}
+    public function setSelectedLoanForReturn($loanId)
+    {
+        $this->selectedLoanId = $loanId;
+        $this->bukti_kembali = null;
+    }
 
-public function konfirmasiPengembalian()
-{
-    $this->validate([
-        'bukti_kembali' => 'required|image|max:2048',
-    ]);
-
-    try {
-        $loan = LoanHistory::find($this->selectedLoanId);
-        
-        if (!$loan) {
-            session()->flash('error', 'Data peminjaman tidak ditemukan.');
-            return;
-        }
-
-        if ($loan->status !== 'dikembalikan') {
-            session()->flash('error', 'Buku belum dalam status dikembalikan atau sudah selesai.');
-            return;
-        }
-
-        $book = Book::find($loan->id_buku);
-        
-        if (!$book) {
-            session()->flash('error', 'Data buku tidak ditemukan.');
-            return;
-        }
-
-        // Upload bukti pengembalian
-        $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
-
-        // Update status peminjaman menjadi selesai dan simpan bukti
-        $loan->update([
-            'status' => 'selesai',
-            'tanggal_kembali' => now(),
-            'bukti_kembali' => $buktiPath
+    public function konfirmasiPengembalian()
+    {
+        $this->validate([
+            'bukti_kembali' => 'required|image|max:2048',
         ]);
 
-        // Kembalikan stok buku
-        $book->increment('stok');
+        try {
+            $loan = LoanHistory::find($this->selectedLoanId);
 
-        session()->flash('success', 'Pengembalian berhasil dikonfirmasi. Status peminjaman sekarang selesai dan stok buku telah dikembalikan.');
-        
-        // Reset form
-        $this->selectedLoanId = null;
-        $this->bukti_kembali = null;
-        
-    } catch (\Exception $e) {
-        session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            if (!$loan) {
+                session()->flash('error', 'Data peminjaman tidak ditemukan.');
+                return;
+            }
+
+            if ($loan->status !== 'dikembalikan') {
+                session()->flash('error', 'Buku belum dalam status dikembalikan atau sudah selesai.');
+                return;
+            }
+
+            $book = Book::find($loan->id_buku);
+
+            if (!$book) {
+                session()->flash('error', 'Data buku tidak ditemukan.');
+                return;
+            }
+
+            // Upload bukti pengembalian
+            $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
+
+            // Update status peminjaman menjadi selesai dan simpan bukti
+            $loan->update([
+                'status' => 'selesai',
+                'tanggal_kembali' => now(),
+                'bukti_kembali' => $buktiPath,
+            ]);
+
+            // Kembalikan stok buku
+            $book->increment('stok');
+
+            session()->flash('success', 'Pengembalian berhasil dikonfirmasi. Status peminjaman sekarang selesai dan stok buku telah dikembalikan.');
+
+            // Reset form
+            $this->selectedLoanId = null;
+            $this->bukti_kembali = null;
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
-}
 
+    public function setSelectedLoanForProof($loanId)
+    {
+        $this->selectedLoanId = $loanId;
+    }
 
     public function peringatiPeminjam($loanId)
     {
@@ -185,29 +187,28 @@ public function konfirmasiPengembalian()
     }
 
     public function getFineDetails($loan)
-{
-    if ($loan->denda > 0) {
-        $fineInfo = $loan->getFineInfo();
-        return [
-            'amount' => $loan->denda,
-            'days_overdue' => $fineInfo['days_overdue'],
-            'fine_per_day' => $fineInfo['fine_per_day'],
-            'due_date' => $fineInfo['due_date'],
-            'is_paid' => $loan->denda_dibayar,
-        ];
+    {
+        if ($loan->denda > 0) {
+            $fineInfo = $loan->getFineInfo();
+            return [
+                'amount' => $loan->denda,
+                'days_overdue' => $fineInfo['days_overdue'],
+                'fine_per_day' => $fineInfo['fine_per_day'],
+                'due_date' => $fineInfo['due_date'],
+                'is_paid' => $loan->denda_dibayar,
+            ];
+        }
+        return null;
     }
-    return null;
-}
 
-public function markFineAsPaid($loanId)
-{
-    $loan = LoanHistory::find($loanId);
-    if ($loan && $loan->denda > 0) {
-        $loan->update(['denda_dibayar' => true]);
-        session()->flash('success', 'Denda berhasil ditandai sebagai sudah dibayar.');
+    public function markFineAsPaid($loanId)
+    {
+        $loan = LoanHistory::find($loanId);
+        if ($loan && $loan->denda > 0) {
+            $loan->update(['denda_dibayar' => true]);
+            session()->flash('success', 'Denda berhasil ditandai sebagai sudah dibayar.');
+        }
     }
-}
-
 
     public function render()
     {

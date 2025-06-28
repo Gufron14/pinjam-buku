@@ -29,6 +29,38 @@ class User extends Authenticatable
     ];
 
     /**
+     * Relasi dengan Genre
+     */
+    // public function genre()
+    // {
+    //     return $this->belongsTo(Genre::class);
+    // }
+
+    /**
+     * Relasi dengan Loans (menggunakan LoanHistory)
+     */
+    // public function loans()
+    // {
+    //     return $this->hasMany(LoanHistory::class);
+    // }
+
+    /**
+     * Mendapatkan peminjaman yang sedang aktif
+     */
+    // public function activeLoans()
+    // {
+    //     return $this->hasMany(LoanHistory::class)->where('status', 'dipinjam');
+    // }
+
+    /**
+     * Mendapatkan riwayat peminjaman
+     */
+    // public function loanHistory()
+    // {
+    //     return $this->hasMany(LoanHistory::class)->orderBy('created_at', 'desc');
+    // }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

@@ -67,12 +67,12 @@
                         <span>Kelola Buku</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="{{ route('kelola-denda') }}" class="waves-effect">
                         <i class="uil-user-times"></i>
                         <span>Kelola Denda</span>
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="{{ route('kelola-member') }}" class="waves-effect">
                         <i class="uil-users-alt"></i>
