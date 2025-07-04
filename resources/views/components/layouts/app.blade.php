@@ -26,7 +26,7 @@
 <body>
     @include('components.navbar')
 
-    <div class="min-h-screen">
+    <div class="container-fluid min-h-screen">
         {{ $slot }}
     </div>
 
@@ -34,7 +34,7 @@
         <i class="bi bi-whatsapp"></i> Hubungi Kami
     </a>
 
-    <footer class="bg-body-tertiary text-center text-lg-start mt-5">
+    <footer class="bg-body-tertiary text-center text-lg-start">
         <div class="d-flex justify-content-between align-items-middle mx-5 py-3">
             <div>
                 <h5 class="fw-bold">Taman Baca Balarea</h5>

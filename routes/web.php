@@ -15,6 +15,7 @@ use App\Livewire\Admin\KelolaMember;
 use App\Livewire\Admin\Pengembalian;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
+use App\Livewire\Admin\Laporan;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,5 +51,6 @@ Route::middleware('admin')->group(function(){
     Route::get('pengembalian', Pengembalian::class)->name('pengembalian');
     Route::get('kelola-buku', KelolaBuku::class)->name('kelola-buku');
     Route::get('kelola-denda', KelolaDenda::class)->name('kelola-denda');
+    Route::get('laporan', Laporan::class)->name('laporan');
     Route::get('kelola-member', KelolaMember::class)->name('kelola-member');
 });

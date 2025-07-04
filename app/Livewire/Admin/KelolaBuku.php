@@ -18,7 +18,7 @@ class KelolaBuku extends Component
     public $categories;
     public $genres;
     public $types;
-    
+
     // Form properties
     public $bookId;
     public $judul;
@@ -28,10 +28,10 @@ class KelolaBuku extends Component
     public $stok;
     public $penulis;
     public $tahun_terbit;
-        public $nama_kategori;
+    public $nama_kategori;
     public $nama_jenis;
     public $nama_genre;
-    
+
     // Modal state
     public $modalMode = 'create'; // create, edit, view
     public $modalTitle = 'Tambah Buku';
@@ -110,7 +110,7 @@ class KelolaBuku extends Component
             'id_kategori' => 'required|exists:categories,id_kategori',
             'id_genre' => 'required|exists:genres,id_genre',
             'id_jenis' => 'required|exists:types,id_jenis',
-            'stok' => 'required|integer|min:0',
+            'stok' => 'required|integer|min:0', 
             'penulis' => 'nullable|string|max:255',
             'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
         ]);
@@ -144,7 +144,7 @@ class KelolaBuku extends Component
         $this->dispatch('close-modal');
     }
 
-        // Tambahkan methods untuk save kategori, jenis, genre
+    // Tambahkan methods untuk save kategori, jenis, genre
     public function saveKategori()
     {
         $this->validate([

@@ -24,7 +24,7 @@ class RiwayatPinjaman extends Component
     public function mount()
     {
         // Check if user can borrow books (no unpaid fines)
-         $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
+        //  $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
     }
 
     public function returnBook($loanId)
@@ -140,7 +140,7 @@ class RiwayatPinjaman extends Component
         }
         
         // Refresh the canBorrowBooks status
-        $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
+        // $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
         
         return view('livewire.riwayat-pinjaman', [
             'loanHistories' => $loanHistories,

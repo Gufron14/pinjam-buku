@@ -1,7 +1,7 @@
 @props(['active' => false])
 
 @php
-    $classes = $active ?? false ? 'nav-link active fw-bold' : 'nav-link text-secondary';
+    $classes = $active ?? false ? 'nav-link active fw-bold text-success' : 'nav-link text-secondary';
 @endphp
 
 <li class="nav-item">

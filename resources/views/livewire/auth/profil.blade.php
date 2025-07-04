@@ -1,5 +1,5 @@
 <div>
-    <div class="container py-4">
+    <div class="container p-5">
         <div class="main-body">
             @if (session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -17,8 +17,8 @@
 
             <div class="row">
                 <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-5">
                             <div class="d-flex flex-column align-items-center text-center">
                                 @if ($newAvatar)
                                     <img src="{{ $newAvatar->temporaryUrl() }}" alt="{{ $name }}"
@@ -60,8 +60,8 @@
                     </div>
                 </div>
                 <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-5">
                             <form wire:submit.prevent="updateProfile">
                                 <div class="row mb-3">
                                     <div class="col-sm-3">

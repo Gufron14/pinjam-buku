@@ -71,6 +71,13 @@
                         <span>Kelola Buku</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('laporan') }}" class="waves-effect">
+                        <i class="uil-document-layout-left"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+
                 {{-- <li>
                     <a href="{{ route('kelola-denda') }}" class="waves-effect">
                         <i class="uil-user-times"></i>
