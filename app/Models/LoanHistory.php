@@ -50,21 +50,18 @@ class LoanHistory extends Model
             return false;
         }
 
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30); // Changed to 30 seconds for testing
-        return Carbon::now()->gt($dueDate);
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30);
+        return Carbon::now('Asia/Jakarta')->gt($dueDate);
     }
 
-    /**
-     * Calculate days overdue (changed to seconds for testing)
-     */
     public function daysOverdue()
     {
         if (!$this->isOverdue()) {
             return 0;
         }
 
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30); // Changed to 30 seconds
-        return Carbon::now()->diffInSeconds($dueDate); // Changed to seconds
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30);
+        return Carbon::now('Asia/Jakarta')->diffInSeconds($dueDate);
     }
 
     /**
@@ -87,11 +84,11 @@ class LoanHistory extends Model
     public function getFineInfo()
     {
         return [
-            'seconds_overdue' => $this->daysOverdue(), // Changed to seconds
-            'fine_per_second' => 1, // Changed to per second
+            'seconds_overdue' => $this->daysOverdue(),
+            'fine_per_second' => 1,
             'total_fine' => $this->denda,
             'is_paid' => $this->denda_dibayar,
-            'due_date' => Carbon::parse($this->tanggal_pinjam)->addSeconds(30)->format('d/m/Y H:i:s'), // Show with time
+            'due_date' => Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30)->format('d/m/Y H:i:s'),
         ];
     }
 
@@ -109,4 +106,40 @@ class LoanHistory extends Model
         }
         return false;
     }
+
+    // Denda Per Buku
+
+    // public function calculateFine()
+    // {
+    //     if (!$this->isOverdue()) {
+    //         return 0;
+    //     }
+
+    //     // Denda tetap per buku yang terlambat (misalnya Rp 5000 per buku)
+    //     $finePerBook = 5000;
+    //     return $finePerBook;
+    // }
+
+    // public function getFineInfo()
+    // {
+    //     return [
+    //         'seconds_overdue' => $this->daysOverdue(),
+    //         'fine_per_book' => 5000, // Denda tetap per buku
+    //         'total_fine' => $this->denda,
+    //         'is_paid' => $this->denda_dibayar,
+    //         'due_date' => Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30)->format('d/m/Y H:i:s'),
+    //     ];
+    // }
+
+    // public function checkAndUpdateOverdueStatus()
+    // {
+    //     if ($this->isOverdue() && $this->status === 'dipinjam') {
+    //         $this->status = 'terlambat';
+    //         // Denda tetap per buku terlambat
+    //         $this->denda = $this->calculateFine();
+    //         $this->save();
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }

@@ -1,8 +1,10 @@
 <?php
 
 use App\Livewire\Home;
+use App\Livewire\Denda;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Profil;
+use App\Livewire\Admin\Laporan;
 use App\Livewire\Auth\Register;
 use App\Livewire\Buku\ViewBuku;
 use App\Livewire\Admin\Dashboard;
@@ -16,7 +18,6 @@ use App\Livewire\Admin\Pengembalian;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\LaporanController;
-use App\Livewire\Admin\Laporan;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,17 +34,23 @@ Route::middleware('guest')->group(function () {
     Route::get('login', Login::class)->name('login');
     Route::get('register', Register::class)->name('register');
 });
-Route::get('/', Home::class)->name('/');
+
 Route::get('/logout', [App\Http\Controllers\LogoutController::class, 'logout'])->name('logout');
-Route::get('daftar-buku', DaftarBuku::class)->name('daftar-buku');
-Route::get('daftar-buku/view-buku/{id}', ViewBuku::class)->name('view-buku');
+
+// Routes yang perlu dicek denda untuk user
+Route::middleware(['denda'])->group(function () {
+    Route::get('/', Home::class)->name('/');
+    Route::get('daftar-buku', DaftarBuku::class)->name('daftar-buku');
+    Route::get('daftar-buku/view-buku/{id}', ViewBuku::class)->name('view-buku');
+});
+
+Route::get('denda', Denda::class)->name('denda');
 
 // User
 Route::middleware('auth')->group(function () {
     Route::get('riwayat-pinjam', RiwayatPinjaman::class)->name('riwayat-pinjam');
     Route::get('profil', Profil::class)->name('profil');
 });
-
 
 // Admin
 Route::middleware('admin')->group(function(){
