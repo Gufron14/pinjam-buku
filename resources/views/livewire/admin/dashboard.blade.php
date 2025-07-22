@@ -53,6 +53,7 @@
         <div class="d-flex gap-2 justify-content-center mx-auto mt-3">
             <a href="{{ route('kelola-buku') }}" class="btn btn-primary fw-bold">Kelola Buku</a>
             <a href="{{ route('peminjaman') }}" class="btn btn-warning fw-bold">Kelola Peminjaman</a>
+            <a href="{{ route('laporan') }}" class="btn btn-success fw-bold">Lihat Laporan</a>
         </div>
     </div>
 </div>

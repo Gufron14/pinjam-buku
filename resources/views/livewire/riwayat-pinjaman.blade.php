@@ -1,5 +1,5 @@
 <div class="">
-    <div class="container-fluid p-5" style="background-color: #eefff6;">
+    <div class="container-fluid p-4" style="background-color: #eefff6;">
         <div class="container">
             <h1 class="fw-bold text-success">Riwayat Peminjaman Buku</h1>
             <p class="text-muted">Lihat riwayat lengkap peminjaman buku kamu</p>

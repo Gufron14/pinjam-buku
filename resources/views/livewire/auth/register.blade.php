@@ -2,7 +2,7 @@
     <div class="container px-4 py-5">
         <div class="card shadow border-0">
             <div class="card-body p-5">
-                <h3 class="mb-5 fw-bold">Daftar SiJambu</h3>
+                <h3 class="mb-5 fw-bold">Daftar Jambu TaBaBa</h3>
                 @if (session()->has('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
