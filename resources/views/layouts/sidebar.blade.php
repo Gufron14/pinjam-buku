@@ -13,7 +13,7 @@
             </span>
         </a>
 
-        <a href="{{url('index')}}" class="logo logo-light">
+        <a href="{{ url('index') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -44,14 +44,16 @@
 
                 {{-- Peminjaman --}}
                 <li>
-                    <a href="{{ route('peminjaman') }}" class="waves-effect">
-                        <i class="uil-fast-mail"></i>
-                            @php
-                                $peminjaman = \App\Models\LoanHistory::where('status', 'pending')->count();
-                            @endphp
-                        <span class="badge rounded-pill bg-primary float-end">{{ $peminjaman }}</span>
-                        <span>Peminjaman</span>
-                    </a>
+                    @php
+                        $peminjaman = \App\Models\LoanHistory::where('status', 'pending')->count();
+                    @endphp
+                        <a href="{{ route('peminjaman') }}" class="waves-effect">
+                            <i class="uil-fast-mail"></i>
+                            @if ($peminjaman > 0)                        
+                                <span class="badge rounded-pill bg-primary float-end">{{ $peminjaman }}</span>
+                            @endif
+                            <span>Peminjaman</span>
+                        </a>
                 </li>
 
                 {{-- Pengembalian --}}

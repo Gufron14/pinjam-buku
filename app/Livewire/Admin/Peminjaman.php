@@ -203,11 +203,44 @@ class Peminjaman extends Component
 
     public function markFineAsPaid($loanId)
     {
-        $loan = LoanHistory::find($loanId);
-        if ($loan && $loan->denda > 0) {
-            $loan->update(['denda_dibayar' => true]);
-            session()->flash('success', 'Denda berhasil ditandai sebagai sudah dibayar.');
+        $this->validate([
+            'bukti_kembali' => 'required|image|max:2048',
+        ]);
+
+        try {
+            $loan = LoanHistory::find($loanId);
+            if ($loan && $loan->denda > 0) {
+                // Upload bukti pengembalian
+                $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
+
+                $loan->update([
+                    'denda_dibayar' => true,
+                    'tanggal_kembali' => now(),
+                    'bukti_kembali' => $buktiPath,
+                    'status' => 'selesai',
+                ]);
+
+                // Kembalikan stok buku
+                $book = Book::find($loan->id_buku);
+                if ($book) {
+                    $book->increment('stok');
+                }
+
+                session()->flash('success', 'Denda berhasil ditandai sebagai sudah dibayar dan pengembalian dikonfirmasi.');
+
+                // Reset form
+                $this->selectedLoanId = null;
+                $this->bukti_kembali = null;
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function setSelectedLoanForFine($loanId)
+    {
+        $this->selectedLoanId = $loanId;
+        $this->bukti_kembali = null;
     }
 
     public function render()

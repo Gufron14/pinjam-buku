@@ -75,6 +75,13 @@
                                         <a href="{{ route('kelola-denda') }}" class="text-danger fw-bold h5">
                                             Rp{{ number_format($loan->denda, 0, ',', '.') }}
                                         </a>
+                                        @if ($loan->denda_dibayar)
+                                        <br>
+                                            <span class="badge bg-primary">Sudah Dibayar</span>
+                                        @else
+                                        <br>    
+                                            <span class="badge bg-secondary">Belum Dibayar</span>
+                                        @endif
                                     </div>
                                 @else
                                     <span class="text-muted">-</span>
@@ -130,9 +137,9 @@
                                             class="btn btn-danger btn-sm">
                                             Peringati
                                         </button>
-                                        <button class="btn btn-sm btn-outline-primary mt-1"
-                                            wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
-                                            wire:confirm="Tandai denda sebagai sudah dibayar?">
+                                        <button class="btn btn-sm btn-outline-primary mt-1" data-bs-toggle="modal"
+                                            data-bs-target="#tandaiLunasModal"
+                                            wire:click="setSelectedLoanForFine({{ $loan->id_pinjaman }})">
                                             Tandai Lunas
                                         </button>
                                     @endif
@@ -266,7 +273,7 @@
                                     $selectedLoan = \App\Models\LoanHistory::find($selectedLoanId);
                                 @endphp
                                 @if ($selectedLoan && $selectedLoan->bukti_kembali)
-                                                                    <div class="mb-3">
+                                    <div class="mb-3">
                                         <strong>Peminjam:</strong> {{ $selectedLoan->user->name ?? 'N/A' }}<br>
                                         <strong>Buku:</strong> {{ $selectedLoan->book->judul ?? 'N/A' }}<br>
                                         <strong>Tanggal Pinjam:</strong>
@@ -289,6 +296,36 @@
                 </div>
             </div>
 
+            {{-- Modal Tandai Lunas --}}
+            <div class="modal fade" id="tandaiLunasModal" tabindex="-1" aria-labelledby="tandaiLunasModalLabel"
+                aria-hidden="true" wire:ignore.self>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="tandaiLunasModalLabel">Tandai Lunas & Upload Bukti
+                                Pengembalian</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="file" class="form-control" wire:model="bukti_kembali" accept="image/*"
+                                required>
+                            @error('bukti_kembali')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary"
+                                wire:click="markFineAsPaid({{ $selectedLoanId }})" data-bs-dismiss="modal"
+                                wire:loading.attr="disabled">
+                                <span wire:loading.remove>Tandai Lunas</span>
+                                <span wire:loading>Processing...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
