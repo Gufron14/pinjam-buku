@@ -16,7 +16,7 @@
             @if ($loanHistories->first()->status == 'pending')
                 <div class="mt-5">
                     <div class="alert alert-primary" role="alert">
-                        <i class="bi bi-info-circle me-2"></i>Kamu sudah minjam buku
+                        <i class="bi bi-info-circle me-2"></i>Kamu baru saja mengajukan peminjaman buku
                         <strong>{{ $loanHistories->first()->book->judul }},</strong> silakan datang ke Taman Baca Balera
                         untuk
                         Disetujui Petugas dan ambil buku!
@@ -28,18 +28,18 @@
                     <div class="col-6 mb-4">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body d-flex align-items-center justify-content-between p-4">
-                                <div class="col">
+                                <div class="col-md-7">
                                     <small>Tanggal Pinjam:
                                         {{ \Carbon\Carbon::parse($history->tanggal_pinjam)->format('d M Y') }}</small>
                                     <h5 class="fw-bold text-success my-2">{{ $history->book->judul }}</h5>
                                     @if ($history->status == 'dipinjam')
-                                        <small class="text-danger">Harus dikembalikan pada:</small>
+                                        <small class="text-danger">Kembalikan sebelum: {{ \Carbon\Carbon::parse($history->tanggal_pinjam)->addWeeks(2)->translatedFormat('d F Y') }}</small>
                                     @elseif ($history->status == 'selesai')
                                         <small>Dikembalikan pada:
                                             {{ \Carbon\Carbon::parse($history->tanggal_kembali)->format('d M Y') }}</small>
                                     @endif
                                 </div>
-                                <div class="col text-end">
+                                <div class="col-md-5 text-end">
                                     @if ($history->status == 'pending')
                                         <span class="badge text-bg-secondary">Menunggu Persetujuan</span>
                                         <div>

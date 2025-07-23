@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
             'email' => 'egi@gmail.com',
             'password' => Hash::make('password'),
             'alamat' => 'Cicalengka, Kab. Bandung, Jawa Barat',
-            'no_telepon' => '08123456789',
+            'no_telepon' => '083829253885',
             'jenis_kelamin' => 'Laki-laki',
         ]);
         $user->assignRole('user');

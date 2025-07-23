@@ -2,7 +2,7 @@
     <div class="container-fluid p-3" style="background-color: #b92020;">
         <div class="container text-center">
             <h1 class="fw-bold text-white">Anda Didenda!</h1>
-            <p class="text-light">Karena terdapat keterlambatan pengembalian buku. Segera Kembalikan dan Bayar Denda!</p>
+            <p class="text-light">Karena terlambat mengembalikan buku</p>
         </div>
     </div>
     <div class="container p-3">

@@ -200,19 +200,8 @@ class Laporan extends Component
             'denda_terbayar' => LoanHistory::where('denda_dibayar', true)
                 ->whereBetween('tanggal_pinjam', [$startDate, $endDate])
                 ->sum('denda'),
-            'buku_terpopuler' => $this->getBukuTerpopuler($startDate, $endDate)
+            // 'buku_terpopuler' => $this->getBukuTerpopuler($startDate, $endDate)
         ];
-    }
-
-    private function getBukuTerpopuler($startDate, $endDate)
-    {
-        return LoanHistory::with('book')
-            ->whereBetween('tanggal_pinjam', [$startDate, $endDate])
-            ->selectRaw('id_buku, COUNT(*) as total_pinjam')
-            ->groupBy('id_buku')
-            ->orderBy('total_pinjam', 'desc')
-            ->limit(5)
-            ->get();
     }
 
     public function cetakLaporan()

@@ -18,40 +18,36 @@ class LoanHistory extends Model
         'id_buku',
         'tanggal_pinjam',
         'tanggal_kembali',
-        'status', // 'dipinjam', 'dikembalikan', 'terlambat'
+        'status', 
         'bukti_pinjam',
         'bukti_kembali',
         'denda',
         'denda_dibayar',
     ];
 
-    /**
-     * Get the book that is loaned.
-     */
     public function book()
     {
         return $this->belongsTo(Book::class, 'id_buku', 'id_buku');
     }
 
-    /**
-     * Get the user that owns the loan.
-     */
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
 
-    /**
-     * Check if the loan is overdue (more than 30 seconds for testing)
-     */
     public function isOverdue()
     {
         if ($this->status === 'dikembalikan') {
             return false;
         }
 
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30);
-        return Carbon::now('Asia/Jakarta')->gt($dueDate);
+        // 2 Minggu
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
+        return Carbon::now()->gt($dueDate);
+
+        // 30 Detik
+        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
+        // return Carbon::now()->gt($dueDate);
     }
 
     public function daysOverdue()
@@ -60,22 +56,24 @@ class LoanHistory extends Model
             return 0;
         }
 
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30);
-        return Carbon::now('Asia/Jakarta')->diffInSeconds($dueDate);
+        // 2 Minggu
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
+        return Carbon::now()->diffInWeeks($dueDate);
+
+        // 30 Detik
+        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
+        // return Carbon::now()->diffInSeconds($dueDate);
     }
 
-    /**
-     * Calculate fine amount based on seconds overdue (for testing)
-     */
     public function calculateFine()
     {
         if (!$this->isOverdue()) {
             return 0;
         }
 
-        $secondsOverdue = $this->daysOverdue();
-        $finePerSecond = 1; // Rp 100 per detik untuk testing
-        return $secondsOverdue * $finePerSecond;
+        // $secondsOverdue = $this->daysOverdue();
+        $finePerBook = 10000;
+        return $finePerBook;
     }
 
     /**
@@ -85,10 +83,11 @@ class LoanHistory extends Model
     {
         return [
             'seconds_overdue' => $this->daysOverdue(),
-            'fine_per_second' => 1,
+            'fine_per_book' => 10000,
             'total_fine' => $this->denda,
             'is_paid' => $this->denda_dibayar,
-            'due_date' => Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30)->format('d/m/Y H:i:s'),
+            'due_date' => Carbon::parse($this->tanggal_pinjam)->addWeeks(2)->format('d/m/Y H:i:s'),
+            // 'due_date' => Carbon::parse($this->tanggal_pinjam)->addSeconds(30)->format('d/m/Y H:i:s'),
         ];
     }
 
@@ -106,40 +105,4 @@ class LoanHistory extends Model
         }
         return false;
     }
-
-    // Denda Per Buku
-
-    // public function calculateFine()
-    // {
-    //     if (!$this->isOverdue()) {
-    //         return 0;
-    //     }
-
-    //     // Denda tetap per buku yang terlambat (misalnya Rp 5000 per buku)
-    //     $finePerBook = 5000;
-    //     return $finePerBook;
-    // }
-
-    // public function getFineInfo()
-    // {
-    //     return [
-    //         'seconds_overdue' => $this->daysOverdue(),
-    //         'fine_per_book' => 5000, // Denda tetap per buku
-    //         'total_fine' => $this->denda,
-    //         'is_paid' => $this->denda_dibayar,
-    //         'due_date' => Carbon::parse($this->tanggal_pinjam)->setTimezone('Asia/Jakarta')->addSeconds(30)->format('d/m/Y H:i:s'),
-    //     ];
-    // }
-
-    // public function checkAndUpdateOverdueStatus()
-    // {
-    //     if ($this->isOverdue() && $this->status === 'dipinjam') {
-    //         $this->status = 'terlambat';
-    //         // Denda tetap per buku terlambat
-    //         $this->denda = $this->calculateFine();
-    //         $this->save();
-    //         return true;
-    //     }
-    //     return false;
-    // }
 }

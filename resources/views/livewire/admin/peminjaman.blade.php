@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     @forelse($loans as $index => $loan)
-                        <tr class="text-center">
+                        <tr class="text-center align-middle">
                             <td>{{ $loans->firstItem() + $index }}</td>
                             <td>{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d/m/Y') }}</td>
                             <td>{{ $loan->book->judul ?? 'Buku tidak ditemukan' }}</td>
@@ -76,11 +76,11 @@
                                             Rp{{ number_format($loan->denda, 0, ',', '.') }}
                                         </a>
                                         @if ($loan->denda_dibayar)
-                                        <br>
-                                            <span class="badge bg-primary">Sudah Dibayar</span>
+                                            <br>
+                                            <span class="badge bg-primary">Sudah Bayar</span>
                                         @else
-                                        <br>    
-                                            <span class="badge bg-secondary">Belum Dibayar</span>
+                                            <br>
+                                            <span class="badge bg-secondary">Belum Bayar</span>
                                         @endif
                                     </div>
                                 @else
@@ -133,11 +133,13 @@
                                     @if ($loan->denda_dibayar)
                                         <span class="badge bg-success">Sudah Dibayar</span>
                                     @else
-                                        <button wire:click="peringatiPeminjam({{ $loan->id_pinjaman }})"
-                                            class="btn btn-danger btn-sm">
-                                            Peringati
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-primary mt-1" data-bs-toggle="modal"
+                                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $loan->user->no_telepon)) }}"
+                                            target="_blank" class="btn btn-success btn-sm">
+                                            <i class="uil-whatsapp"></i>
+                                            Hubungi
+                                        </a>
+
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#tandaiLunasModal"
                                             wire:click="setSelectedLoanForFine({{ $loan->id_pinjaman }})">
                                             Tandai Lunas
