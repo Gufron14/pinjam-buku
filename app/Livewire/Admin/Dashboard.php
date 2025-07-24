@@ -23,8 +23,7 @@ class Dashboard extends Component
 
         return [
             'total_peminjaman' => LoanHistory::whereBetween('tanggal_pinjam', [$startDate, $endDate])->count(),
-            'total_pengembalian' => LoanHistory::where('status', 'dikembalikan')
-                ->whereBetween('tanggal_kembali', [$startDate, $endDate])
+            'total_pengembalian' => LoanHistory::whereBetween('tanggal_kembali', [$startDate, $endDate])
                 ->count(),
             'total_terlambat' => LoanHistory::where('status', 'terlambat')
                 ->whereBetween('tanggal_pinjam', [$startDate, $endDate])

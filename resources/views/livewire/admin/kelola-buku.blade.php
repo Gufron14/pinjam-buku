@@ -197,7 +197,7 @@
                 </div>
             </div>
 
-                        <!-- Modal untuk Kategori -->
+            <!-- Modal untuk Kategori -->
             <div class="modal fade" id="tambahKategoriModal" tabindex="-1" aria-labelledby="tambahKategoriModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -213,6 +213,26 @@
                                     @error('nama_kategori')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
+                                </div>
+                                                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Daftar Kategori</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($categories as $item)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->nama_kategori }}</td>
+                                            @empty
+                                                    <td colspan="2">Tidak ada Jenis</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -241,6 +261,26 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Daftar Jenis</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($types as $item)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->nama_jenis }}</td>
+                                            @empty
+                                                    <td colspan="2">Tidak ada Jenis</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -267,6 +307,26 @@
                                     @error('nama_genre')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Daftar Genre</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($genres as $item)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->nama_genre}}</td>
+                                            @empty
+                                                    <td colspan="2">Tidak ada Genre</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="modal-footer">

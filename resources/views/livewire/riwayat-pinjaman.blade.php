@@ -42,15 +42,15 @@
                                 <div class="col-md-5 text-end">
                                     @if ($history->status == 'pending')
                                         <span class="badge text-bg-secondary">Menunggu Persetujuan</span>
-                                        <div>
+                                        {{-- <div>
                                             <button class="btn btn-danger btn-sm my-2">
                                                 Batalkan
                                             </button>
-                                        </div>
+                                        </div> --}}
                                     @elseif ($history->status == 'dipinjam')
                                         <span class="badge text-bg-primary">Dipinjam</span>
                                     @elseif ($history->status == 'dikembalikan')
-                                        <span class="badge text-bg-warning">Menunggu Persetujuan</span>
+                                        <span class="badge text-bg-secondary">Menunggu Dikembalikan</span>
                                     @elseif ($history->status == 'terlambat')
                                         <span class="badge text-bg-danger">Terlambat</span>
                                         @if (!$history->denda_dibayar)

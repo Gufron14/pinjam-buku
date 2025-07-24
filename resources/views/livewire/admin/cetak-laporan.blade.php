@@ -293,7 +293,7 @@
                             <th>Lama Pinjam</th>
                             <th>Kondisi</th>
                         @elseif($type == 'denda')
-                            <th>Keterlambatan</th>
+                            {{-- <th>Keterlambatan</th> --}}
                             <th>Jumlah Denda</th>
                             <th>Status Bayar</th>
                         @endif
@@ -373,22 +373,22 @@
                                     @endif
                                 </td>
                             @elseif($type == 'denda')
-                                <td>
                                     @php
                                         $fineInfo = $item->getFineInfo();
                                     @endphp
+                                {{-- <td>
                                     <div>
                                         <span class="text-danger"><strong>{{ $fineInfo['seconds_overdue'] }}
                                                 detik</strong></span><br>
                                         <small>Batas: {{ $fineInfo['due_date'] }}</small>
                                     </div>
-                                </td>
+                                </td> --}}
                                 <td>
                                     <div>
                                         <span class="text-danger currency">Rp
                                             {{ number_format($item->denda, 0, ',', '.') }}</span><br>
                                         <small>@ Rp
-                                            {{ number_format($fineInfo['fine_per_second'], 0, ',', '.') }}/detik</small>
+                                            {{ number_format($fineInfo['fine_per_book'], 0, ',', '.') }}/detik</small>
                                     </div>
                                 </td>
                                 <td>

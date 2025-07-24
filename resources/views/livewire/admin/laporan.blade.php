@@ -306,10 +306,10 @@
                                                 <th>Peminjam</th>
                                                 <th>Judul Buku</th>
                                                 <th>Tanggal Pinjam</th>
-                                                <th>Keterlambatan</th>
+                                                {{-- <th>Keterlambatan</th> --}}
                                                 <th>Jumlah Denda</th>
                                                 <th>Status Bayar</th>
-                                                <th>Aksi</th>
+                                                {{-- <th>Aksi</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -340,21 +340,21 @@
                                                     </td>
                                                     <td>{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d/m/Y H:i') }}
                                                     </td>
-                                                    <td>
                                                         @php
                                                             $fineInfo = $loan->getFineInfo();
                                                         @endphp
+                                                    {{-- <td>
                                                         <span
                                                             class="text-danger fw-bold">{{ $fineInfo['seconds_overdue'] }}
                                                             detik</span>
                                                         <br><small class="text-muted">Batas:
                                                             {{ $fineInfo['due_date'] }}</small>
-                                                    </td>
+                                                    </td> --}}
                                                     <td>
                                                         <span class="fw-bold text-danger fs-6">Rp
                                                             {{ number_format($loan->denda, 0, ',', '.') }}</span>
                                                         <br><small class="text-muted">@ Rp
-                                                            {{ number_format($fineInfo['fine_per_second'], 0, ',', '.') }}/detik</small>
+                                                            {{ number_format($fineInfo['fine_per_book'], 0, ',', '.') }}/buku</small>
                                                     </td>
                                                     <td>
                                                         @if ($loan->denda_dibayar)
@@ -363,7 +363,7 @@
                                                             <span class="badge bg-danger">Belum Bayar</span>
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         @if (!$loan->denda_dibayar)
                                                             <button class="btn btn-sm btn-success"
                                                                 wire:click="bayarDenda({{ $loan->id_pinjaman }})">
@@ -374,7 +374,7 @@
                                                                 <i class="ri-check-line"></i> Lunas
                                                             </span>
                                                         @endif
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @empty
                                                 <tr>

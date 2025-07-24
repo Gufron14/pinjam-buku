@@ -11,7 +11,7 @@
             <div class="col-12">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <i class="ri-alert-line me-2"></i>
-                    <strong>Perhatian!</strong> Anda memiliki denda yang belum dibayar. Silakan bayar denda terlebih
+                    <strong>Perhatian!</strong> Anda memiliki denda yang belum dibayar. Silakan kembalikan dan bayar denda terlebih
                     dahulu untuk dapat mengakses fitur lainnya.
                 </div>
             </div>
@@ -122,7 +122,7 @@
                             </li>
                             <li>
                                 <i class="ri-check-line text-success me-2"></i>
-                                Denda tetap Rp 5.000 per buku terlambat
+                                Denda tetap Rp10.000 per buku terlambat
                             </li>
                         </ul>
                     </div>

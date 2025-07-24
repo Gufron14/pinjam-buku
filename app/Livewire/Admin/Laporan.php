@@ -138,7 +138,7 @@ class Laporan extends Component
     public function getLaporanPengembalianProperty()
     {
         $query = LoanHistory::with(['user', 'book'])
-            ->where('status', 'dikembalikan')
+            ->where('status', 'selesai')
             ->when($this->search, function($q) {
                 $q->whereHas('user', function($query) {
                     $query->where('name', 'like', '%' . $this->search . '%')

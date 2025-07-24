@@ -158,6 +158,7 @@ class KelolaBuku extends Component
         $this->nama_kategori = '';
         $this->loadData();
         session()->flash('message', 'Kategori berhasil ditambahkan!');
+        
     }
 
     public function saveJenis()
