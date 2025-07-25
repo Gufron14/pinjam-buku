@@ -15,6 +15,7 @@ use App\Livewire\Admin\Peminjaman;
 use App\Livewire\Admin\KelolaDenda;
 use App\Livewire\Admin\KelolaMember;
 use App\Livewire\Admin\Pengembalian;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\LaporanController;
@@ -63,3 +64,10 @@ Route::middleware('admin')->group(function(){
     Route::get('laporan/cetak', [LaporanController::class, 'cetakLaporan'])->name('laporan.cetak');
     Route::get('kelola-member', KelolaMember::class)->name('kelola-member');
 });
+
+Route::post('logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect()->route('login');
+})->name('logout');
