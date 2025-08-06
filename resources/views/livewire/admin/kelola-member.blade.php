@@ -177,6 +177,22 @@
                             </div>
                         </div>
 
+                        {{-- KTP --}}
+                        <div class="mt-4">
+                            <h6 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-id-card me-2"></i>Foto Tanda Pengenal
+                            </h6>
+                            @if($selectedUser->ktp)
+                                <img src="{{ asset('storage/' . $selectedUser->ktp) }}" 
+                                     class="img-fluid rounded" alt="Foto KTP">
+                            @else
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                    Tidak ada foto KTP
+                                </div>
+                            @endif
+                        </div>
+
                         {{-- Loan History --}}
                         {{-- <div class="mt-4">
                             <h6 class="border-bottom pb-2 mb-3">

@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_buku');
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali')->nullable();
-            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'ditolak', 'terlambat', 'selesai'])->default('pending');
+            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'ditolak', 'terlambat', 'selesai', 'dibatalkan'])->default('pending');
             $table->string('bukti_pinjam')->nullable();
             $table->string('bukti_kembali')->nullable();
             $table->decimal('denda', 10, 2)->default(0);

@@ -42,12 +42,12 @@ class LoanHistory extends Model
         }
 
         // 2 Minggu
-        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
-        // return Carbon::now()->gt($dueDate);
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
+        return Carbon::now()->gt($dueDate);
 
         // 30 Detik
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
-        return Carbon::now()->gt($dueDate);
+        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
+        // return Carbon::now()->gt($dueDate);
     }
 
     public function daysOverdue()
@@ -57,12 +57,12 @@ class LoanHistory extends Model
         }
 
         // 2 Minggu
-        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
-        // return Carbon::now()->diffInWeeks($dueDate);
+        $dueDate = Carbon::parse($this->tanggal_pinjam)->addWeeks(2);
+        return Carbon::now()->diffInWeeks($dueDate);
 
         // 30 Detik
-        $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
-        return Carbon::now()->diffInSeconds($dueDate);
+        // $dueDate = Carbon::parse($this->tanggal_pinjam)->addSeconds(30);
+        // return Carbon::now()->diffInSeconds($dueDate);
     }
 
     public function calculateFine()

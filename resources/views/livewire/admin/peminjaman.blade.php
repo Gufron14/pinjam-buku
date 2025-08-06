@@ -92,11 +92,10 @@
                             <td>
                                 @if ($loan->status === 'pending')
                                     {{-- Jika status pending, tampilkan button setujui dan tolak --}}
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#setujuiModal"
-                                        wire:click="setSelectedLoan({{ $loan->id_pinjaman }})">
-                                        Setujui
-                                    </button>
+                            <button type="button" class="btn btn-primary btn-sm" wire:click="konfirmasiPeminjaman({{ $loan->id_pinjaman }})"
+                                wire:confirm="Apakah Anda yakin ingin mengonfirmasi peminjaman ini?">
+                               Setujui
+                            </button>
                                     <button wire:click="tolakPeminjaman({{ $loan->id_pinjaman }})"
                                         class="btn btn-danger btn-sm"
                                         wire:confirm="Apakah Anda yakin ingin menolak peminjaman ini?">
@@ -139,9 +138,8 @@
                                             Hubungi
                                         </a>
 
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#tandaiLunasModal"
-                                            wire:click="setSelectedLoanForFine({{ $loan->id_pinjaman }})">
+                                        <button class="btn btn-sm btn-primary" wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
+                                        wire:confirm="Apakah Anda yakin ingin menandai denda sebagai dibayar?">
                                             Tandai Lunas
                                         </button>
                                     @endif
@@ -159,7 +157,7 @@
             {{ $loans->links() }}
 
             <!-- Modal Setuju-->
-            <div class="modal fade" id="setujuiModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            {{-- <div class="modal fade" id="setujuiModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -185,10 +183,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Modal Konfirmasi PengembaIian --}}
-            <div class="modal fade" id="pengembalianModal" tabindex="-1" aria-labelledby="pengembalianModalLabel"
+            {{-- <div class="modal fade" id="pengembalianModal" tabindex="-1" aria-labelledby="pengembalianModalLabel"
                 aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -214,10 +212,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Modal untuk Bukti Pinjam -->
-            <div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel"
+            {{-- <div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel"
                 aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -257,10 +255,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
 
-            <div class="modal fade" id="buktiKembaliModal" tabindex="-1" aria-labelledby="buktiModalLabel"
+            {{-- <div class="modal fade" id="buktiKembaliModal" tabindex="-1" aria-labelledby="buktiModalLabel"
                 aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -296,10 +294,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Modal Tandai Lunas --}}
-            <div class="modal fade" id="tandaiLunasModal" tabindex="-1" aria-labelledby="tandaiLunasModalLabel"
+            {{-- <div class="modal fade" id="tandaiLunasModal" tabindex="-1" aria-labelledby="tandaiLunasModalLabel"
                 aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -327,7 +325,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
     </div>

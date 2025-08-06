@@ -27,103 +27,83 @@ class RiwayatPinjaman extends Component
         //  $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
     }
 
-    public function returnBook($loanId)
+    public function cancelLoan($loanId)
     {
         $loan = LoanHistory::find($loanId);
         
-        if (!$loan || $loan->id_user != Auth::id()) {
-            session()->flash('error', 'Transaksi peminjaman tidak ditemukan.');
-            return;
-        }
-
-        // Check if the loan is overdue
-        $loan->checkAndUpdateOverdueStatus();
-        
-        // If there's a fine that hasn't been paid, don't allow return
-        if ($loan->status === 'terlambat' && $loan->denda > 0 && !$loan->denda_dibayar) {
-            session()->flash('error', 'Anda memiliki denda yang belum dibayar. Silakan bayar denda terlebih dahulu.');
-            return;
-        }
-
-        // Mark as returned
+        // Batal Pinjam
         $loan->update([
-            'tanggal_kembali' => now(),
-            'status' => 'dikembalikan',
+            'status' => 'dibatalkan',
         ]);
 
-        // Increase book stock
-        $book = Book::find($loan->id_buku);
-        $book->stok += 1;
-        $book->save();
+        session()->flash('message', 'Pinjaman berhasil dibatalkan.');
+        // $this->refreshLoanHistory();
+        return redirect()->route('riwayat-pinjaman');
+    }
 
-        session()->flash('message', 'Buku berhasil dikembalikan.');
+    // public function openPaymentModal($loanId)
+    // {
+    //     $this->selectedLoanId = $loanId;
+    //     $this->showPaymentModal = true;
+    // }
+
+    // public function closePaymentModal()
+    // {
+    //     $this->showPaymentModal = false;
+    //     $this->paymentProof = null;
+    //     $this->selectedLoanId = null;
+    // }
+
+    // public function uploadPaymentProof()
+    // {
+    //     $this->validate([
+    //         'paymentProof' => 'required|image|max:1024', // max 1MB
+    //     ]);
+
+    //     $loan = LoanHistory::find($this->selectedLoanId);
         
-        // Refresh the canBorrowBooks status
-        $this->canBorrowBooks = !LoanHistory::hasUnpaidFines(Auth::id());
-    }
+    //     if (!$loan || $loan->id_user != Auth::id()) {
+    //         session()->flash('error', 'Transaksi peminjaman tidak ditemukan.');
+    //         $this->closePaymentModal();
+    //         return;
+    //     }
 
-    public function openPaymentModal($loanId)
-    {
-        $this->selectedLoanId = $loanId;
-        $this->showPaymentModal = true;
-    }
-
-    public function closePaymentModal()
-    {
-        $this->showPaymentModal = false;
-        $this->paymentProof = null;
-        $this->selectedLoanId = null;
-    }
-
-    public function uploadPaymentProof()
-    {
-        $this->validate([
-            'paymentProof' => 'required|image|max:1024', // max 1MB
-        ]);
-
-        $loan = LoanHistory::find($this->selectedLoanId);
+    //     // Store the payment proof
+    //     $path = $this->paymentProof->store('payment-proofs', 'public');
         
-        if (!$loan || $loan->id_user != Auth::id()) {
-            session()->flash('error', 'Transaksi peminjaman tidak ditemukan.');
-            $this->closePaymentModal();
-            return;
-        }
+    //     // Update the loan record
+    //     $loan->update([
+    //         'bukti_pembayaran' => $path,
+    //         'denda_dibayar' => true,
+    //         'konfirmasi_admin' => false, // Admin still needs to confirm
+    //     ]);
 
-        // Store the payment proof
-        $path = $this->paymentProof->store('payment-proofs', 'public');
-        
-        // Update the loan record
-        $loan->update([
-            'bukti_pembayaran' => $path,
-            'denda_dibayar' => true,
-            'konfirmasi_admin' => false, // Admin still needs to confirm
-        ]);
-
-        session()->flash('message', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
-        $this->closePaymentModal();
-    }
+    //     session()->flash('message', 'Bukti pembayaran berhasil diunggah. Menunggu konfirmasi admin.');
+    //     $this->closePaymentModal();
+    // }
 
     // Admin function to confirm payment
-    public function confirmPayment($loanId)
-    {
-        if (!Auth::user()->hasRole('admin')) {
-            return;
-        }
+    // public function confirmPayment($loanId)
+    // {
+    //     if (!Auth::user()->hasRole('admin')) {
+    //         return;
+    //     }
 
-        $loan = LoanHistory::find($loanId);
+    //     $loan = LoanHistory::find($loanId);
         
-        if (!$loan) {
-            session()->flash('error', 'Transaksi peminjaman tidak ditemukan.');
-            return;
-        }
+    //     if (!$loan) {
+    //         session()->flash('error', 'Transaksi peminjaman tidak ditemukan.');
+    //         return;
+    //     }
 
-        $loan->update([
-            'konfirmasi_admin' => true,
-        ]);
+    //     $loan->update([
+    //         'konfirmasi_admin' => true,
+    //     ]);
 
-        session()->flash('message', 'Pembayaran denda telah dikonfirmasi.');
-    }
+    //     session()->flash('message', 'Pembayaran denda telah dikonfirmasi.');
+    // }
 
+    
     public function render()
     {
         // Get all loan histories for the current user

@@ -36,7 +36,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <label class="form-label small text-muted">Genre</label>
                                 <select wire:model.live="genreFilter" class="form-select">
                                     <option value="">Semua Genre</option>
@@ -44,7 +44,7 @@
                                         <option value="{{ $genre->id_genre }}">{{ $genre->nama_genre }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="col-md-3">
                                 <label class="form-label small text-muted">Jenis</label>
                                 <select wire:model.live="jenisFilter" class="form-select">

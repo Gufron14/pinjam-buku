@@ -35,6 +35,14 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <label for="ktp" class="form-label">Foto KTP</label>
+                                <input type="file" class="form-control @error('ktp') is-invalid @enderror"
+                                    wire:model="ktp" placeholder="Masukan email">
+                                @error('ktp')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="col-md-6">

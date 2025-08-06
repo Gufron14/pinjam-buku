@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('alamat')->nullable();
             $table->string('no_telepon')->unique()->nullable();
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
+            $table->string('ktp')->nullable();
             $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();

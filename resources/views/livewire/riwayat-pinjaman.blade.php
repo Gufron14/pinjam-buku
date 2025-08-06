@@ -42,11 +42,11 @@
                                 <div class="col-md-5 text-end">
                                     @if ($history->status == 'pending')
                                         <span class="badge text-bg-secondary">Menunggu Persetujuan</span>
-                                        {{-- <div>
-                                            <button class="btn btn-danger btn-sm my-2">
-                                                Batalkan
+                                        <div>
+                                            <button class="btn btn-danger btn-sm my-2" wire:click="cancelLoan({{ $history->id_pinjaman }})" wire:confirm="Apakah Anda yakin ingin membatalkan pinjaman ini?">
+                                                Batal Pinjam
                                             </button>
-                                        </div> --}}
+                                        </div>
                                     @elseif ($history->status == 'dipinjam')
                                         <span class="badge text-bg-primary">Dipinjam</span>
                                     @elseif ($history->status == 'dikembalikan')
@@ -72,6 +72,8 @@
                                         @endif
                                     @elseif ($history->status == 'ditolak')
                                         <span class="badge text-bg-danger">Ditolak</span>
+                                    @elseif ($history->status == 'dibatalkan')
+                                        <span class="badge text-bg-secondary">Dibatalkan</span>
                                     @endif
                                 </div>
                             </div>

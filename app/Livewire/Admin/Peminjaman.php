@@ -14,9 +14,9 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.master')]
 class Peminjaman extends Component
 {
-    use WithPagination, WithFileUploads;
-    public $bukti_pinjam;
-    public $bukti_kembali;
+    use WithPagination;
+    // public $bukti_pinjam;
+    // public $bukti_kembali;
 
     public $selectedLoanId;
 
@@ -47,18 +47,18 @@ class Peminjaman extends Component
     public function setSelectedLoan($loanId)
     {
         $this->selectedLoanId = $loanId;
-        $this->bukti_pinjam = null;
+        // $this->bukti_pinjam = null;
     }
 
     // Fungsi untuk mengonfirmasi peminjaman buku
-    public function konfirmasiPeminjaman()
+    public function konfirmasiPeminjaman($loanId)
     {
-        $this->validate([
-            'bukti_pinjam' => 'required|image|max:2048',
-        ]);
+        // $this->validate([
+        //     'bukti_pinjam' => 'required|image|max:2048',
+        // ]);
 
         try {
-            $loan = LoanHistory::find($this->selectedLoanId);
+            $loan = LoanHistory::find($loanId);
 
             if (!$loan) {
                 session()->flash('error', 'Data peminjaman tidak ditemukan.');
@@ -83,13 +83,13 @@ class Peminjaman extends Component
             }
 
             // Upload bukti pinjam
-            $buktiPath = $this->bukti_pinjam->store('bukti-pinjam', 'public');
+            // $buktiPath = $this->bukti_pinjam->store('bukti-pinjam', 'public');
 
             // Update status peminjaman menjadi dipinjam dan simpan bukti
             $loan->update([
                 'status' => 'dipinjam',
                 'tanggal_pinjam' => now(),
-                'bukti_pinjam' => $buktiPath,
+                // 'bukti_pinjam' => $buktiPath,
             ]);
 
             // Kurangi stok buku
@@ -99,7 +99,7 @@ class Peminjaman extends Component
 
             // Reset form
             $this->selectedLoanId = null;
-            $this->bukti_pinjam = null;
+            // $this->bukti_pinjam = null;
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -109,14 +109,14 @@ class Peminjaman extends Component
     public function setSelectedLoanForReturn($loanId)
     {
         $this->selectedLoanId = $loanId;
-        $this->bukti_kembali = null;
+        // $this->bukti_kembali = null;
     }
 
     public function konfirmasiPengembalian()
     {
-        $this->validate([
-            'bukti_kembali' => 'required|image|max:2048',
-        ]);
+        // $this->validate([
+        //     'bukti_kembali' => 'required|image|max:2048',
+        // ]);
 
         try {
             $loan = LoanHistory::find($this->selectedLoanId);
@@ -139,13 +139,13 @@ class Peminjaman extends Component
             }
 
             // Upload bukti pengembalian
-            $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
+            // $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
 
             // Update status peminjaman menjadi selesai dan simpan bukti
             $loan->update([
                 'status' => 'selesai',
                 'tanggal_kembali' => now(),
-                'bukti_kembali' => $buktiPath,
+                // 'bukti_kembali' => $buktiPath,
             ]);
 
             // Kembalikan stok buku
@@ -155,7 +155,7 @@ class Peminjaman extends Component
 
             // Reset form
             $this->selectedLoanId = null;
-            $this->bukti_kembali = null;
+            // $this->bukti_kembali = null;
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -203,20 +203,20 @@ class Peminjaman extends Component
 
     public function markFineAsPaid($loanId)
     {
-        $this->validate([
-            'bukti_kembali' => 'required|image|max:2048',
-        ]);
+        // $this->validate([
+        //     'bukti_kembali' => 'required|image|max:2048',
+        // ]);
 
         try {
             $loan = LoanHistory::find($loanId);
             if ($loan && $loan->denda > 0) {
                 // Upload bukti pengembalian
-                $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
+                // $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
 
                 $loan->update([
                     'denda_dibayar' => true,
                     'tanggal_kembali' => now(),
-                    'bukti_kembali' => $buktiPath,
+                    // 'bukti_kembali' => $buktiPath,
                     'status' => 'selesai',
                 ]);
 
@@ -230,7 +230,7 @@ class Peminjaman extends Component
 
                 // Reset form
                 $this->selectedLoanId = null;
-                $this->bukti_kembali = null;
+                // $this->bukti_kembali = null;
             }
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -240,7 +240,7 @@ class Peminjaman extends Component
     public function setSelectedLoanForFine($loanId)
     {
         $this->selectedLoanId = $loanId;
-        $this->bukti_kembali = null;
+        // $this->bukti_kembali = null;
     }
 
     public function render()
