@@ -106,20 +106,20 @@ class Peminjaman extends Component
     }
 
     // Fungsi untuk mengonfirmasi pengembalian
-    public function setSelectedLoanForReturn($loanId)
+    public function setSelectedLoanForReturn($selectedLoanId)
     {
-        $this->selectedLoanId = $loanId;
+        $this->selectedLoanId = $selectedLoanId;
         // $this->bukti_kembali = null;
     }
 
-    public function konfirmasiPengembalian()
+    public function konfirmasiPengembalian($loanId)
     {
         // $this->validate([
         //     'bukti_kembali' => 'required|image|max:2048',
         // ]);
 
         try {
-            $loan = LoanHistory::find($this->selectedLoanId);
+            $loan = LoanHistory::find($loanId);
 
             if (!$loan) {
                 session()->flash('error', 'Data peminjaman tidak ditemukan.');
@@ -182,6 +182,7 @@ class Peminjaman extends Component
             'terlambat' => '<span class="badge bg-danger">Terlambat</span>',
             'selesai' => '<span class="badge bg-success">Selesai</span>',
             'ditolak' => '<span class="badge bg-dark">Ditolak</span>',
+            'dibatalkan' => '<span class="badge bg-secondary">Dibatalkan</span>',
             default => '<span class="badge bg-secondary">Unknown</span>',
         };
     }

@@ -112,20 +112,19 @@
 
                                     {{-- Dikembalikan -> Konfirmasi --}}
                                 @elseif ($loan->status === 'dikembalikan')
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#pengembalianModal"
-                                        wire:click="setSelectedLoanForReturn({{ $loan->id_pinjaman }})">
+                                    <button class="btn btn-primary btn-sm" wire:click="konfirmasiPengembalian({{ $loan->id_pinjaman }})"
+                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi pengembalian buku ini?">
                                         Konfirmasi
                                     </button>
 
                                     {{-- Selesai -> Bukti Kembali --}}
                                 @elseif ($loan->status === 'selesai')
-                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    {{-- <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#buktiKembaliModal"
                                         wire:click="setSelectedLoanForProof({{ $loan->id_pinjaman }})">
                                         <i class="uil-eye me-1"></i>
                                         Bukti Pengembalian
-                                    </button>
+                                    </button> --}}
 
                                     {{-- Terlambat -> Peringati, Tandai Lunas --}}
                                 @elseif ($loan->status === 'terlambat')
