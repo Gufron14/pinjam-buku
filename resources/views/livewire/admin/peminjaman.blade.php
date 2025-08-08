@@ -119,6 +119,11 @@
 
                                     {{-- Selesai -> Bukti Kembali --}}
                                 @elseif ($loan->status === 'selesai')
+                                    <a href="{{ route('receipt', $loan->id_pinjaman) }}"
+                                        class="btn btn-success btn-sm">
+                                        <i class="uil-eye me-1"></i>
+                                        Lihat Struk
+                                    </a>
                                     {{-- <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#buktiKembaliModal"
                                         wire:click="setSelectedLoanForProof({{ $loan->id_pinjaman }})">

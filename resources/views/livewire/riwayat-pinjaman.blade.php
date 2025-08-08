@@ -33,7 +33,8 @@
                                         {{ \Carbon\Carbon::parse($history->tanggal_pinjam)->format('d M Y') }}</small>
                                     <h5 class="fw-bold text-success my-2">{{ $history->book->judul }}</h5>
                                     @if ($history->status == 'dipinjam')
-                                        <small class="text-danger">Kembalikan sebelum: {{ \Carbon\Carbon::parse($history->tanggal_pinjam)->addWeeks(2)->translatedFormat('d F Y') }}</small>
+                                        <small class="text-danger">Kembalikan sebelum:
+                                            {{ \Carbon\Carbon::parse($history->tanggal_pinjam)->addWeeks(2)->translatedFormat('d F Y') }}</small>
                                     @elseif ($history->status == 'selesai')
                                         <small>Dikembalikan pada:
                                             {{ \Carbon\Carbon::parse($history->tanggal_kembali)->format('d M Y') }}</small>
@@ -43,7 +44,9 @@
                                     @if ($history->status == 'pending')
                                         <span class="badge text-bg-secondary">Menunggu Persetujuan</span>
                                         <div>
-                                            <button class="btn btn-danger btn-sm my-2" wire:click="cancelLoan({{ $history->id_pinjaman }})" wire:confirm="Apakah Anda yakin ingin membatalkan pinjaman ini?">
+                                            <button class="btn btn-danger btn-sm my-2"
+                                                wire:click="cancelLoan({{ $history->id_pinjaman }})"
+                                                wire:confirm="Apakah Anda yakin ingin membatalkan pinjaman ini?">
                                                 Batal Pinjam
                                             </button>
                                         </div>
@@ -66,10 +69,14 @@
                                             <span class="badge text-bg-primary">Sudah Bayar</span>
                                         @endif
                                         @if ($history->denda_dibayar)
-                                        <br> <br>
-                                        <small>Denda:</small>
-                                            <span class="fw-bold text-danger h5">Rp{{ number_format($history->denda, 0, ',', '.' ?? '') }}</span>
+                                            <br> <br>
+                                            <small>Denda:</small>
+                                            <span
+                                                class="fw-bold text-danger h5">Rp{{ number_format($history->denda, 0, ',', '.' ?? '') }}</span>
                                         @endif
+                                        <br><br>
+                                        <a href="{{ route('receipt', $history->id_pinjaman) }}"
+                                            class=""><small>Cetak Struk</small></a>
                                     @elseif ($history->status == 'ditolak')
                                         <span class="badge text-bg-danger">Ditolak</span>
                                     @elseif ($history->status == 'dibatalkan')

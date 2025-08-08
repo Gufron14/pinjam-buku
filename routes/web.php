@@ -51,10 +51,11 @@ Route::get('denda', Denda::class)->name('denda');
 Route::middleware('auth')->group(function () {
     Route::get('riwayat-pinjam', RiwayatPinjaman::class)->name('riwayat-pinjam');
     Route::get('profil', Profil::class)->name('profil');
+    Route::get('receipt/{loanId}', \App\Http\Livewire\Receipt::class)->name('receipt');
 });
 
 // Admin
-Route::middleware('admin')->group(function(){
+Route::middleware('admin')->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('peminjaman', Peminjaman::class)->name('peminjaman');
     Route::get('pengembalian', Pengembalian::class)->name('pengembalian');
