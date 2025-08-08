@@ -1,18 +1,17 @@
 <div>
     <div class="container-fluid p-3" style="background-color: #b92020;">
         <div class="container text-center">
-            <h1 class="fw-bold text-white">Anda Didenda!</h1>
-            <p class="text-light">Karena terlambat mengembalikan buku</p>
+            <h1 class="fw-bold text-white">Kami mohon maaf!</h1>
+            <p class="text-light">keterlambatan pengembalian buku dikenakan denda.</p>
         </div>
     </div>
     <div class="container p-3">
         <!-- Alert Info -->
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 mb-4 mt-4">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <i class="ri-alert-line me-2"></i>
-                    <strong>Perhatian!</strong> Anda memiliki denda yang belum dibayar. Silakan kembalikan dan bayar denda terlebih
-                    dahulu untuk dapat mengakses fitur lainnya.
+                    Perhatian: Terdapat denda yang belum diselesaikan. Silakan kembalikan buku dan lakukan pembayaran agar Anda dapat kembali menikmati semua fitur kami.
                 </div>
             </div>
         </div>
