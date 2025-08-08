@@ -54,6 +54,33 @@
                                                 menyimpan.</span>
                                         </div>
                                     @endif
+                                    
+                                    <div class="mt-4">
+                                        <h6>KTP</h6>
+                                        @if ($newKtp)
+                                            <img src="{{ $newKtp->temporaryUrl() }}" alt="Preview KTP" class="img-fluid mb-2" style="max-height: 200px;">
+                                        @elseif($ktp && Storage::disk('public')->exists($ktp))
+                                            <img src="{{ Storage::url($ktp) }}" alt="KTP" class="img-fluid mb-2" style="max-height: 200px;">
+                                        @else
+                                            <p class="text-muted">Belum ada KTP yang diunggah</p>
+                                        @endif
+                                        
+                                        <div class="mt-2">
+                                            <label for="ktp-upload" class="btn btn-primary btn-sm">
+                                                {{ $ktp ? 'Ubah KTP' : 'Unggah KTP' }}
+                                            </label>
+                                            <input id="ktp-upload" type="file" wire:model="newKtp" class="d-none">
+                                        </div>
+                                        @error('newKtp')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                        
+                                        @if ($newKtp)
+                                            <div class="mt-2">
+                                                <span class="text-success">KTP baru dipilih. Klik "Simpan Perubahan" untuk menyimpan.</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
