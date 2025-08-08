@@ -25,6 +25,41 @@
                 </div>
             @endif
 
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Cari judul buku..." wire:model.live.debounce.300ms="search">
+                        @if($search)
+                            <button class="btn btn-outline-secondary" type="button" wire:click="$set('search', '')" title="Hapus pencarian">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" wire:model.live="filterKategori">
+                        <option value="">Semua Kategori</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id_kategori }}">{{ $category->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" wire:model.live="filterJenis">
+                        <option value="">Semua Jenis</option>
+                        @foreach ($types as $type)
+                            <option value="{{ $type->id_jenis }}">{{ $type->nama_jenis }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    @if($search || $filterKategori || $filterJenis)
+                        <button class="btn btn-outline-secondary w-100" wire:click="clearFilters" title="Reset semua filter">
+                            <i class="fas fa-undo me-1"></i>Reset Filter
+                        </button>
+                    @endif
+                </div>
+            </div>
             <table class="table table-bordered">
                 <thead>
                     <tr class="text-center">
@@ -68,11 +103,94 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="text-center">Tidak ada data buku</td>
+                            <td colspan="6" class="text-center py-4">
+                                @if($search || $filterKategori || $filterJenis)
+                                    <div class="text-muted">
+                                        <i class="fas fa-search fa-2x mb-2"></i>
+                                        <br>
+                                        Tidak ada buku yang sesuai dengan kriteria pencarian
+                                        <br>
+                                        <small>Coba ubah kata kunci atau filter yang digunakan</small>
+                                    </div>
+                                @else
+                                    <div class="text-muted">
+                                        <i class="fas fa-book fa-2x mb-2"></i>
+                                        <br>
+                                        Belum ada data buku
+                                        <br>
+                                        <small>Klik tombol "Tambah Buku" untuk mulai menambahkan data</small>
+                                    </div>
+                                @endif
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
+
+            @if($totalBooks > 0)
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <small class="text-muted">
+                        Menampilkan {{ ($page - 1) * $perPage + 1 }} - {{ min($page * $perPage, $totalBooks) }} dari {{ $totalBooks }} data
+                    </small>
+                    <div class="d-flex align-items-center">
+                        <label class="me-2">Tampilkan:</label>
+                        <select class="form-select form-select-sm" style="width: auto;" wire:model.live="perPage">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="ms-2">per halaman</span>
+                    </div>
+                </div>
+            @endif
+
+            @if($totalBooks > $perPage)
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {{ $page == 1 ? 'disabled' : '' }}">
+                        <button class="page-link" wire:click="prevPage" {{ $page == 1 ? 'disabled' : '' }}>Previous</button>
+                    </li>
+                    @php
+                        $totalPages = ceil($totalBooks / $perPage);
+                        $startPage = max(1, $page - 2);
+                        $endPage = min($totalPages, $page + 2);
+                    @endphp
+                    
+                    @if($startPage > 1)
+                        <li class="page-item">
+                            <button class="page-link" wire:click="$set('page', 1)">1</button>
+                        </li>
+                        @if($startPage > 2)
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        @endif
+                    @endif
+                    
+                    @for ($i = $startPage; $i <= $endPage; $i++)
+                        <li class="page-item {{ $page == $i ? 'active' : '' }}">
+                            <button class="page-link" wire:click="$set('page', {{ $i }})">{{ $i }}</button>
+                        </li>
+                    @endfor
+                    
+                    @if($endPage < $totalPages)
+                        @if($endPage < $totalPages - 1)
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        @endif
+                        <li class="page-item">
+                            <button class="page-link" wire:click="$set('page', {{ $totalPages }})">{{ $totalPages }}</button>
+                        </li>
+                    @endif
+                    
+                    <li class="page-item {{ $page == $totalPages ? 'disabled' : '' }}">
+                        <button class="page-link" wire:click="nextPage" {{ $page == $totalPages ? 'disabled' : '' }}>Next</button>
+                    </li>
+                </ul>
+            </nav>
+            @endif
 
             <!-- Modal Dinamis untuk Buku -->
             <div class="modal fade" id="bukuModal" tabindex="-1" aria-labelledby="bukuModalLabel" aria-hidden="true"

@@ -39,15 +39,43 @@ class KelolaBuku extends Component
 
     public function mount()
     {
-        $this->loadData();
-    }
-
-    public function loadData()
-    {
-        $this->books = Book::with(['category', 'genre', 'type'])->get();
+        // Initial load will be handled by render method
         $this->categories = Categories::all();
         $this->genres = Genre::all();
         $this->types = Type::all();
+    }
+
+    // Search, filter, and pagination properties
+    public $search = '';
+    public $filterKategori = '';
+    public $filterJenis = '';
+    public $perPage = 10;
+    public $page = 1;
+    public $totalBooks = 0;
+
+    public function loadData()
+    {
+        $query = Book::with(['category', 'genre', 'type']);
+        
+        // Apply filters
+        if ($this->search) {
+            $query->where('judul', 'like', '%' . $this->search . '%');
+        }
+        if ($this->filterKategori) {
+            $query->where('id_kategori', $this->filterKategori);
+        }
+        if ($this->filterJenis) {
+            $query->where('id_jenis', $this->filterJenis);
+        }
+        
+        // Get total count before pagination
+        $this->totalBooks = $query->count();
+        
+        // Apply pagination
+        $this->books = $query
+            ->skip(($this->page - 1) * $this->perPage)
+            ->take($this->perPage)
+            ->get();
     }
 
     public function openCreateModal()
@@ -110,7 +138,7 @@ class KelolaBuku extends Component
             'id_kategori' => 'required|exists:categories,id_kategori',
             'id_genre' => 'required|exists:genres,id_genre',
             'id_jenis' => 'required|exists:types,id_jenis',
-            'stok' => 'required|integer|min:0', 
+            'stok' => 'required|integer|min:0',
             'penulis' => 'nullable|string|max:255',
             'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
         ]);
@@ -140,7 +168,6 @@ class KelolaBuku extends Component
             session()->flash('message', 'Buku berhasil diperbarui!');
         }
 
-        $this->loadData();
         $this->dispatch('close-modal');
     }
 
@@ -156,9 +183,8 @@ class KelolaBuku extends Component
         ]);
 
         $this->nama_kategori = '';
-        $this->loadData();
+        $this->categories = Categories::all(); // Refresh categories only
         session()->flash('message', 'Kategori berhasil ditambahkan!');
-        
     }
 
     public function saveJenis()
@@ -172,7 +198,7 @@ class KelolaBuku extends Component
         ]);
 
         $this->nama_jenis = '';
-        $this->loadData();
+        $this->types = Type::all(); // Refresh types only
         session()->flash('message', 'Jenis berhasil ditambahkan!');
     }
 
@@ -187,7 +213,7 @@ class KelolaBuku extends Component
         ]);
 
         $this->nama_genre = '';
-        $this->loadData();
+        $this->genres = Genre::all(); // Refresh genres only
         session()->flash('message', 'Genre berhasil ditambahkan!');
     }
 
@@ -211,7 +237,6 @@ class KelolaBuku extends Component
         if ($book) {
             $book->delete();
             session()->flash('message', 'Buku berhasil dihapus!');
-            $this->loadData();
         } else {
             session()->flash('error', 'Buku tidak ditemukan!');
         }
@@ -219,6 +244,64 @@ class KelolaBuku extends Component
 
     public function render()
     {
+        $this->loadData();
         return view('livewire.admin.kelola-buku');
+    }
+    // Real-time update methods
+    public function updatedSearch()
+    {
+        $this->resetPage();
+        $this->loadData();
+    }
+    
+    public function updatedFilterKategori()
+    {
+        $this->resetPage();
+        $this->loadData();
+    }
+    
+    public function updatedFilterJenis()
+    {
+        $this->resetPage();
+        $this->loadData();
+    }
+    
+    public function updatedPage()
+    {
+        $this->loadData();
+    }
+    
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+        $this->loadData();
+    }
+    
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->filterKategori = '';
+        $this->filterJenis = '';
+        $this->resetPage();
+        $this->loadData();
+    }
+
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
+
+    public function nextPage()
+    {
+        if ($this->page < ceil($this->totalBooks / $this->perPage)) {
+            $this->page++;
+        }
+    }
+    
+    public function prevPage()
+    {
+        if ($this->page > 1) {
+            $this->page--;
+        }
     }
 }
