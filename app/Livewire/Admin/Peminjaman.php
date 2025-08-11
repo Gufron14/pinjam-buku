@@ -19,6 +19,10 @@ class Peminjaman extends Component
     // public $bukti_kembali;
 
     public $selectedLoanId;
+    public $search = '';
+    public $filterStatus = '';
+    public $filterTanggalAwal = '';
+    public $filterTanggalAkhir = '';
 
     public function mount()
     {
@@ -176,7 +180,7 @@ class Peminjaman extends Component
     public function getStatusBadge($status)
     {
         return match ($status) {
-            'pending' => '<span class="badge bg-secondary">Pending</span>',
+            'pending' => '<span class="badge bg-secondary">Baru</span>',
             'dipinjam' => '<span class="badge bg-primary">Dipinjam</span>',
             'dikembalikan' => '<span class="badge bg-warning">Dikembalikan</span>',
             'terlambat' => '<span class="badge bg-danger">Terlambat</span>',
@@ -244,12 +248,51 @@ class Peminjaman extends Component
         // $this->bukti_kembali = null;
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterStatus()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterTanggalAwal()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterTanggalAkhir()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $loans = LoanHistory::with(['user', 'book'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
+        $query = LoanHistory::with(['user', 'book']);
+        
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->whereHas('user', function ($subQ) {
+                    $subQ->where('name', 'like', '%' . $this->search . '%');
+                })->orWhereHas('book', function ($subQ) {
+                    $subQ->where('judul', 'like', '%' . $this->search . '%');
+                });
+            });
+        }
+        
+        if ($this->filterStatus) {
+            $query->where('status', $this->filterStatus);
+        }
+        
+        if ($this->filterTanggalAwal) {
+            $query->whereDate('tanggal_pinjam', '>=', $this->filterTanggalAwal);
+        }
+        
+        if ($this->filterTanggalAkhir) {
+            $query->whereDate('tanggal_pinjam', '<=', $this->filterTanggalAkhir);
+        }
+        
+        $loans = $query->orderBy('created_at', 'desc')->paginate(10);
+        
         return view('livewire.admin.peminjaman', [
             'loans' => $loans,
         ]);

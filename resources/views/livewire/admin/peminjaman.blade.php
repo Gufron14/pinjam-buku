@@ -47,6 +47,29 @@
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Daftar Peminjaman Buku</h4>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" placeholder="Cari nama peminjam atau judul buku" wire:model.live.debounce.500ms="search">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" wire:model.live="filterStatus">
+                        <option value="">Semua Status</option>
+                        <option value="pending">Baru</option>
+                        <option value="dipinjam">Dipinjam</option>
+                        <option value="dikembalikan">Dikembalikan</option>
+                        <option value="terlambat">Terlambat</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="ditolak">Ditolak</option>
+                        <option value="dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" wire:model.live="filterTanggalAwal" placeholder="Tanggal Awal">
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" wire:model.live="filterTanggalAkhir" placeholder="Tanggal Akhir">
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <table class="table table-bordered">
@@ -87,7 +110,6 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-
 
                             <td>
                                 @if ($loan->status === 'pending')

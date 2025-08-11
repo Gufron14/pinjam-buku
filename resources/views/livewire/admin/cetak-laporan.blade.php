@@ -327,7 +327,7 @@
                                 </td>
                                 <td>
                                     @if ($item->status == 'pending')
-                                        <span class="badge badge-warning">Pending</span>
+                                        <span class="badge badge-warning">Baru</span>
                                     @elseif($item->status == 'dipinjam')
                                         <span class="badge badge-info">Dipinjam</span>
                                     @elseif($item->status == 'dikembalikan')
