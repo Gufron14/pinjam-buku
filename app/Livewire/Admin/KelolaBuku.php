@@ -28,6 +28,7 @@ class KelolaBuku extends Component
     public $stok;
     public $penulis;
     public $tahun_terbit;
+    public $untuk_umur;
     public $nama_kategori;
     public $nama_jenis;
     public $nama_genre;
@@ -117,6 +118,7 @@ class KelolaBuku extends Component
         $this->stok = $book->stok;
         $this->penulis = $book->penulis;
         $this->tahun_terbit = $book->tahun_terbit;
+        $this->untuk_umur = $book->untuk_umur;
     }
 
     public function resetForm()
@@ -141,6 +143,7 @@ class KelolaBuku extends Component
             'stok' => 'required|integer|min:0',
             'penulis' => 'nullable|string|max:255',
             'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'untuk_umur' => 'nullable|string|max:255',
         ]);
 
         if ($this->modalMode === 'create') {
@@ -152,6 +155,7 @@ class KelolaBuku extends Component
                 'stok' => $this->stok,
                 'penulis' => $this->penulis,
                 'tahun_terbit' => $this->tahun_terbit,
+                'untuk_umur' => $this->untuk_umur,
             ]);
             session()->flash('message', 'Buku berhasil ditambahkan!');
         } else {
@@ -164,6 +168,7 @@ class KelolaBuku extends Component
                 'stok' => $this->stok,
                 'penulis' => $this->penulis,
                 'tahun_terbit' => $this->tahun_terbit,
+                'untuk_umur' => $this->untuk_umur,
             ]);
             session()->flash('message', 'Buku berhasil diperbarui!');
         }

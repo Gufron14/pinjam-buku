@@ -245,7 +245,7 @@ class DaftarBuku extends Component
             $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
         }
 
-        $books = $booksQuery->paginate(12);
+        $books = $booksQuery->orderBy('created_at', 'desc')->paginate(12);
         $categories = \App\Models\Categories::all();
         $genres = \App\Models\Genre::all();
         $types = \App\Models\Type::all();

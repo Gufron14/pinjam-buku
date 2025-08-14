@@ -279,7 +279,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="stok" class="form-label">Stok</label>
                                             <input type="number" class="form-control" id="stok"
@@ -289,7 +289,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="tahun_terbit" class="form-label">Tahun Terbit</label>
                                             <input type="number" class="form-control" id="tahun_terbit"
@@ -297,6 +297,17 @@
                                             @error('tahun_terbit')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="untuk_umur" class="form-label">Umur</label>
+                                            <select class="form-select" id="untuk_umur" wire:model="untuk_umur"
+                                                {{ $isReadOnly ? 'disabled' : '' }}>
+                                                <option value="">Pilih Umur</option>
+                                                <option value="16">17 Tahun Ke Bawah</option>
+                                                <option value="17">17 Tahun Ke Atas</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
