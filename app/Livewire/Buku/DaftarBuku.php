@@ -209,8 +209,8 @@ class DaftarBuku extends Component
         $user = auth()->user();
         $umur = $user ? $user->umur : null;
         
-        // Rule 3: Filter umur hanya tersedia untuk umur 17+
-        $showUmurFilter = $umur && $umur >= 17;
+        // Show age filter for users 17+ OR when no user is logged in
+        $showUmurFilter = !$user || ($umur && $umur >= 17);
         
         $booksQuery = Book::with(['category', 'genre', 'type'])
             ->when($this->search, function ($query) {
@@ -241,8 +241,13 @@ class DaftarBuku extends Component
                 // Jika umurFilter kosong, tampilkan semua buku
             }
         } else {
-            // Jika user tidak login atau umur tidak diketahui, tampilkan semua buku kecuali 17+
-            $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
+            // Jika user tidak login, tampilkan semua buku dan bisa filter berdasarkan umur
+            if ($this->umurFilter === '17+') {
+                $booksQuery = $booksQuery->where('untuk_umur', '>=', 17);
+            } elseif ($this->umurFilter === 'under_17') {
+                $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
+            }
+            // Jika umurFilter kosong, tampilkan semua buku
         }
 
         $books = $booksQuery->orderBy('created_at', 'desc')->paginate(12);
