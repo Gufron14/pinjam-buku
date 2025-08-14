@@ -47,7 +47,7 @@
                 <div class="col-md-3">
                     <select class="form-select" wire:model.live="filterJenis">
                         <option value="">Semua Jenis</option>
-                        @foreach ($types as $type)
+                        @foreach ($this->getFilteredTypesForFilter() as $type)
                             <option value="{{ $type->id_jenis }}">{{ $type->nama_jenis }}</option>
                         @endforeach
                     </select>
@@ -231,7 +231,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="id_kategori" class="form-label">Kategori</label>
-                                            <select class="form-select" id="id_kategori" wire:model="id_kategori"
+                                            <select class="form-select" id="id_kategori" wire:model.live="id_kategori"
                                                 {{ $isReadOnly ? 'disabled' : '' }}>
                                                 <option value="">Pilih Kategori</option>
                                                 @foreach ($categories as $category)
@@ -246,32 +246,32 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="id_genre" class="form-label">Genre</label>
-                                            <select class="form-select" id="id_genre" wire:model="id_genre"
+                                            <label for="id_jenis" class="form-label">Jenis</label>
+                                            <select class="form-select" id="id_jenis" wire:model.live="id_jenis"
                                                 {{ $isReadOnly ? 'disabled' : '' }}>
-                                                <option value="">Pilih Genre</option>
-                                                @foreach ($genres as $genre)
-                                                    <option value="{{ $genre->id_genre }}">{{ $genre->nama_genre }}
+                                                <option value="">Pilih Jenis</option>
+                                                @foreach ($filteredTypes as $type)
+                                                    <option value="{{ $type->id_jenis }}">{{ $type->nama_jenis }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('id_genre')
+                                            @error('id_jenis')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="id_jenis" class="form-label">Jenis</label>
-                                            <select class="form-select" id="id_jenis" wire:model="id_jenis"
+                                            <label for="id_genre" class="form-label">Genre</label>
+                                            <select class="form-select" id="id_genre" wire:model.live="id_genre"
                                                 {{ $isReadOnly ? 'disabled' : '' }}>
-                                                <option value="">Pilih Jenis</option>
-                                                @foreach ($types as $type)
-                                                    <option value="{{ $type->id_jenis }}">{{ $type->nama_jenis }}
+                                                <option value="">Pilih Genre</option>
+                                                @foreach ($filteredGenres as $genre)
+                                                    <option value="{{ $genre->id_genre }}">{{ $genre->nama_genre }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('id_jenis')
+                                            @error('id_genre')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -384,6 +384,18 @@
                         <form wire:submit.prevent="saveJenis">
                             <div class="modal-body">
                                 <div class="mb-3">
+                                    <label for="id_kategori_jenis" class="form-label">Kategori</label>
+                                    <select class="form-select" id="id_kategori_jenis" wire:model="id_kategori" required>
+                                        <option value="">Pilih Kategori</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id_kategori }}">{{ $category->nama_kategori }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_kategori')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
                                     <label for="nama_jenis" class="form-label">Nama Jenis</label>
                                     <input type="text" class="form-control" id="nama_jenis" wire:model="nama_jenis" required>
                                     @error('nama_jenis')
@@ -430,6 +442,18 @@
                         </div>
                         <form wire:submit.prevent="saveGenre">
                             <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="id_jenis_genre" class="form-label">Jenis</label>
+                                    <select class="form-select" id="id_jenis_genre" wire:model="id_jenis" required>
+                                        <option value="">Pilih Jenis</option>
+                                        @foreach ($types as $type)
+                                            <option value="{{ $type->id_jenis }}">{{ $type->nama_jenis }} ({{ $type->category->nama_kategori ?? 'Tanpa Kategori' }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_jenis')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                                 <div class="mb-3">
                                     <label for="nama_genre" class="form-label">Nama Genre</label>
                                     <input type="text" class="form-control" id="nama_genre" wire:model="nama_genre" required>

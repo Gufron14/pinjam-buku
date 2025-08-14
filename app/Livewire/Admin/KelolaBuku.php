@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Book;
-use App\Models\Categories;
+use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Type;
 use Livewire\Component;
@@ -18,6 +18,8 @@ class KelolaBuku extends Component
     public $categories;
     public $genres;
     public $types;
+    public $filteredTypes = [];
+    public $filteredGenres = [];
 
     // Form properties
     public $bookId;
@@ -41,9 +43,11 @@ class KelolaBuku extends Component
     public function mount()
     {
         // Initial load will be handled by render method
-        $this->categories = Categories::all();
+        $this->categories = Category::all();
         $this->genres = Genre::all();
         $this->types = Type::all();
+        $this->filteredTypes = $this->types;
+        $this->filteredGenres = $this->genres;
     }
 
     // Search, filter, and pagination properties
@@ -68,6 +72,9 @@ class KelolaBuku extends Component
         if ($this->filterJenis) {
             $query->where('id_jenis', $this->filterJenis);
         }
+        
+        // Sort by newest first (latest created_at)
+        $query->orderBy('created_at', 'desc');
         
         // Get total count before pagination
         $this->totalBooks = $query->count();
@@ -119,6 +126,10 @@ class KelolaBuku extends Component
         $this->penulis = $book->penulis;
         $this->tahun_terbit = $book->tahun_terbit;
         $this->untuk_umur = $book->untuk_umur;
+        
+        // Update filtered options based on selected values
+        $this->updateFilteredTypes();
+        $this->updateFilteredGenres();
     }
 
     public function resetForm()
@@ -131,6 +142,11 @@ class KelolaBuku extends Component
         $this->stok = '';
         $this->penulis = '';
         $this->tahun_terbit = '';
+        $this->untuk_umur = '';
+        
+        // Reset filtered options
+        $this->filteredTypes = $this->types;
+        $this->filteredGenres = $this->genres;
     }
 
     public function save()
@@ -176,6 +192,52 @@ class KelolaBuku extends Component
         $this->dispatch('close-modal');
     }
 
+    // Methods for handling hierarchical filtering
+    public function updatedIdKategori()
+    {
+        $this->id_jenis = '';
+        $this->id_genre = '';
+        $this->updateFilteredTypes();
+        $this->updateFilteredGenres();
+    }
+
+    public function updatedIdJenis()
+    {
+        $this->id_genre = '';
+        $this->updateFilteredGenres();
+    }
+
+    public function updateFilteredTypes()
+    {
+        if ($this->id_kategori) {
+            $this->filteredTypes = Type::where('id_kategori', $this->id_kategori)->get();
+        } else {
+            $this->filteredTypes = $this->types;
+        }
+    }
+
+    public function updateFilteredGenres()
+    {
+        if ($this->id_jenis) {
+            $this->filteredGenres = Genre::where('id_jenis', $this->id_jenis)->get();
+        } else if ($this->id_kategori) {
+            // Get genres through types that belong to selected category
+            $typeIds = Type::where('id_kategori', $this->id_kategori)->pluck('id_jenis');
+            $this->filteredGenres = Genre::whereIn('id_jenis', $typeIds)->get();
+        } else {
+            $this->filteredGenres = $this->genres;
+        }
+    }
+
+    // Filter methods for table filtering
+    public function getFilteredTypesForFilter()
+    {
+        if ($this->filterKategori) {
+            return Type::where('id_kategori', $this->filterKategori)->get();
+        }
+        return $this->types;
+    }
+
     // Tambahkan methods untuk save kategori, jenis, genre
     public function saveKategori()
     {
@@ -183,43 +245,52 @@ class KelolaBuku extends Component
             'nama_kategori' => 'required|string|max:255|unique:categories,nama_kategori',
         ]);
 
-        Categories::create([
+        Category::create([
             'nama_kategori' => $this->nama_kategori,
         ]);
 
         $this->nama_kategori = '';
-        $this->categories = Categories::all(); // Refresh categories only
+        $this->categories = Category::all(); // Refresh categories only
         session()->flash('message', 'Kategori berhasil ditambahkan!');
+        $this->dispatch('close-modal');
     }
 
     public function saveJenis()
     {
         $this->validate([
-            'nama_jenis' => 'required|string|max:255|unique:types,nama_jenis',
+            'nama_jenis' => 'required|string|max:255',
+            'id_kategori' => 'required|exists:categories,id_kategori',
         ]);
 
         Type::create([
             'nama_jenis' => $this->nama_jenis,
+            'id_kategori' => $this->id_kategori,
         ]);
 
         $this->nama_jenis = '';
+        $this->id_kategori = '';
         $this->types = Type::all(); // Refresh types only
         session()->flash('message', 'Jenis berhasil ditambahkan!');
+        $this->dispatch('close-modal');
     }
 
     public function saveGenre()
     {
         $this->validate([
-            'nama_genre' => 'required|string|max:255|unique:genres,nama_genre',
+            'nama_genre' => 'required|string|max:255',
+            'id_jenis' => 'required|exists:types,id_jenis',
         ]);
 
         Genre::create([
             'nama_genre' => $this->nama_genre,
+            'id_jenis' => $this->id_jenis,
         ]);
 
         $this->nama_genre = '';
+        $this->id_jenis = '';
         $this->genres = Genre::all(); // Refresh genres only
         session()->flash('message', 'Genre berhasil ditambahkan!');
+        $this->dispatch('close-modal');
     }
 
     public function getJumlahPeminjam($bookId)
