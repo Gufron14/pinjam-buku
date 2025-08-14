@@ -42,8 +42,7 @@
                                             <i class="bi bi-envelope-exclamation me-2"></i>Kirim
                                             Email Verifikasi</button>
                                     @else
-                                        <button wire:click="sendEmailVerification" class="btn btn-success btn-sm"
-                                            disabled><i class="bi bi-check2-circle me-2"></i>Terverifikasi</button>
+                                        <button wire:click="sendEmailVerification" class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-2"></i>Terverifikasi</button>
                                     @endif
                                     <p class="text-muted font-size-sm mt-2">{{ $alamat }}</p>
                                     <div class="mt-2">

@@ -7,6 +7,9 @@ use Livewire\Component;
 use Livewire\Attributes\Title;
 use App\Models\Book;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PermohonanPeminjaman;
+use App\Mail\PermohonanPengembalian;
 
 #[Title('Daftar Buku')]
 class DaftarBuku extends Component
@@ -19,6 +22,10 @@ class DaftarBuku extends Component
     public $jenisFilter = '';
     public $bookId;
     public $umurFilter = '';
+    
+    // Loading states
+    public $loadingPinjamBuku = [];
+    public $loadingKembalikanBuku = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -75,101 +82,95 @@ class DaftarBuku extends Component
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
+        $this->loadingPinjamBuku[$bookId] = true;
 
-        // Cek verifikasi email
-        if (is_null($user->email_verified_at)) {
+        try {
+            $user = auth()->user();
+
+            // Cek verifikasi email
+            if (is_null($user->email_verified_at)) {
+                $this->dispatch('showAlertPinjam', [
+                    'type' => 'error',
+                    'message' => 'Akun kamu belum terverifikasi email. Silakan verifikasi email terlebih dahulu sebelum meminjam buku.',
+                ]);
+                return;
+            }
+
+            // Cek apakah user sudah pinjam buku ini dan belum selesai (pending, dipinjam, atau menunggu konfirmasi pengembalian)
+            $alreadyBorrowed = LoanHistory::where('id_user', $user->id)
+                ->where('id_buku', $bookId)
+                ->whereIn('status', ['pending', 'dipinjam', 'menunggu_konfirmasi_pengembalian'])
+                ->exists();
+
+            if ($alreadyBorrowed) {
+                $this->dispatch('showAlertPinjam', [
+                    'type' => 'error',
+                    'message' => 'Kamu sudah meminjam buku ini. Kembalikan dulu sebelum pinjam lagi.',
+                ]);
+                return;
+            }
+
+            // Cek jumlah total pinjaman aktif user (pending + dipinjam + menunggu konfirmasi pengembalian)
+            $activeBorrowCount = LoanHistory::where('id_user', $user->id)
+                ->whereIn('status', ['pending', 'dipinjam', 'dikembalikan'])
+                ->count();
+
+            if ($activeBorrowCount >= 2) {
+                $this->dispatch('showAlertPinjam', [
+                    'type' => 'error',
+                    'message' => 'Kamu hanya bisa meminjam maksimal 2 buku sekaligus.',
+                ]);
+                return;
+            }
+
+            $book = Book::find($bookId);
+
+            if (!$book) {
+                $this->dispatch('showAlertPinjam', [
+                    'type' => 'error',
+                    'message' => 'Buku tidak ditemukan.',
+                ]);
+                return;
+            }
+
+            // Cek stok tersedia (langsung dari database)
+            if ($book->stok <= 0) {
+                $this->dispatch('showAlertPinjam', [
+                    'type' => 'error',
+                    'message' => 'Stok buku tidak tersedia.',
+                ]);
+                return;
+            }
+
+            // Buat catatan peminjaman dengan status pending
+            $loan = LoanHistory::create([
+                'id_user' => $user->id,
+                'id_buku' => $bookId,
+                'status' => 'pending',
+                'tanggal_pinjam' => now(),
+                'tanggal_kembali' => null,
+            ]);
+
+            // Load relasi untuk email
+            $loan->load(['user', 'book']);
+
+            // Kirim email notifikasi ke admin
+            $adminEmail = env('ADMIN_EMAIL', 'younggufron.mmnm@gmail.com');
+            Mail::to($adminEmail)->send(new PermohonanPeminjaman($loan));
+
+            // Kirim event sukses
+            $this->dispatch('showAlertPinjam', [
+                'type' => 'success',
+                'message' => 'Permohonan peminjaman berhasil dikirim dan notifikasi telah dikirim ke admin!',
+            ]);
+        } catch (\Exception $e) {
             $this->dispatch('showAlertPinjam', [
                 'type' => 'error',
-                'message' => 'Akun kamu belum terverifikasi email. Silakan verifikasi email terlebih dahulu sebelum meminjam buku.',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ]);
-            return;
+        } finally {
+            $this->loadingPinjamBuku[$bookId] = false;
         }
-
-        // Check if user has unpaid fines
-        // if (LoanHistory::hasUnpaidFines($user->id)) {
-        //     $this->dispatch('showAlertPinjam', [
-        //         'type' => 'error',
-        //         'message' => 'Anda memiliki denda yang belum dibayar. Silakan bayar denda untuk dapat meminjam buku lagi.',
-        //     ]);
-        //     return;
-        // }
-
-        // Cek apakah user sudah pinjam buku ini dan belum selesai (pending, dipinjam, atau menunggu konfirmasi pengembalian)
-        $alreadyBorrowed = LoanHistory::where('id_user', $user->id)
-            ->where('id_buku', $bookId)
-            ->whereIn('status', ['pending', 'dipinjam', 'menunggu_konfirmasi_pengembalian'])
-            ->exists();
-
-        if ($alreadyBorrowed) {
-            $this->dispatch('showAlertPinjam', [
-                'type' => 'error',
-                'message' => 'Kamu sudah meminjam buku ini. Kembalikan dulu sebelum pinjam lagi.',
-            ]);
-            return;
-        }
-
-        // Cek jumlah total pinjaman aktif user (pending + dipinjam + menunggu konfirmasi pengembalian)
-        $activeBorrowCount = LoanHistory::where('id_user', $user->id)
-            ->whereIn('status', ['pending', 'dipinjam', 'dikembalikan'])
-            ->count();
-
-        if ($activeBorrowCount >= 2) {
-            $this->dispatch('showAlertPinjam', [
-                'type' => 'error',
-                'message' => 'Kamu hanya bisa meminjam maksimal 2 buku sekaligus.',
-            ]);
-            return;
-        }
-
-        $book = Book::find($bookId);
-
-        if (!$book) {
-            $this->dispatch('showAlertPinjam', [
-                'type' => 'error',
-                'message' => 'Buku tidak ditemukan.',
-            ]);
-            return;
-        }
-
-        // Cek stok tersedia (langsung dari database)
-        if ($book->stok <= 0) {
-            $this->dispatch('showAlertPinjam', [
-                'type' => 'error',
-                'message' => 'Stok buku tidak tersedia.',
-            ]);
-            return;
-        }
-
-        // Cek stok tersedia (tidak termasuk yang sedang pending)
-        // $pendingLoans = LoanHistory::where('id_buku', $bookId)
-        //     ->whereIn('status', ['pending', 'dipinjam'])
-        //     ->count();
-
-        // $availableStock = $book->stok - $pendingLoans;
-
-        // if ($availableStock <= 0) {
-        //     $this->dispatch('showAlertPinjam', [
-        //         'type' => 'error',
-        //         'message' => 'Stok buku tidak tersedia.',
-        //     ]);
-        //     return;
-        // }
-
-        // Buat catatan peminjaman dengan status pending
-        LoanHistory::create([
-            'id_user' => $user->id,
-            'id_buku' => $bookId,
-            'status' => 'pending',
-            'tanggal_pinjam' => now(),
-            'tanggal_kembali' => null,
-        ]);
-
-        // Kirim event sukses
-        $this->dispatch('showAlertPinjam', [
-            'type' => 'success',
-            'message' => 'Permohonan peminjaman berhasil dikirim! Menunggu konfirmasi admin.',
-        ]);
     }
 
     public function kembalikanBuku($bookId)
@@ -178,30 +179,45 @@ class DaftarBuku extends Component
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
+        $this->loadingKembalikanBuku[$bookId] = true;
 
-        // Cari transaksi yang sedang dipinjam
-        $transaction = LoanHistory::where('id_user', $user->id)->where('id_buku', $bookId)->where('status', 'dipinjam')->first();
+        try {
+            $user = auth()->user();
 
-        if (!$transaction) {
+            // Cari transaksi yang sedang dipinjam
+            $transaction = LoanHistory::with(['user', 'book'])->where('id_user', $user->id)->where('id_buku', $bookId)->where('status', 'dipinjam')->first();
+
+            if (!$transaction) {
+                $this->dispatch('showAlertKembali', [
+                    'type' => 'error',
+                    'message' => 'Transaksi peminjaman tidak ditemukan atau buku belum dikonfirmasi dipinjam.',
+                ]);
+                return;
+            }
+
+            // Update status menjadi menunggu konfirmasi pengembalian
+            $transaction->update([
+                'status' => 'dikembalikan',
+                'tanggal_kembali' => now(),
+            ]);
+
+            // Kirim email notifikasi ke admin
+            $adminEmail = env('ADMIN_EMAIL', 'younggufron.mmnm@gmail.com');
+            Mail::to($adminEmail)->send(new PermohonanPengembalian($transaction));
+
+            // Kirim event sukses
+            $this->dispatch('showAlertKembali', [
+                'type' => 'success',
+                'message' => 'Permohonan pengembalian berhasil dikirim dan notifikasi telah dikirim ke admin!',
+            ]);
+        } catch (\Exception $e) {
             $this->dispatch('showAlertKembali', [
                 'type' => 'error',
-                'message' => 'Transaksi peminjaman tidak ditemukan atau buku belum dikonfirmasi dipinjam.',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ]);
-            return;
+        } finally {
+            $this->loadingKembalikanBuku[$bookId] = false;
         }
-
-        // Update status menjadi menunggu konfirmasi pengembalian
-        $transaction->update([
-            'status' => 'dikembalikan',
-            'tanggal_kembali' => now(),
-        ]);
-
-        // Kirim event sukses
-        $this->dispatch('showAlertKembali', [
-            'type' => 'success',
-            'message' => 'Permohonan pengembalian berhasil dikirim! Silakan antarkan buku ke Taman Baca Balarea dan tunggu konfirmasi admin.',
-        ]);
     }
 
     /**

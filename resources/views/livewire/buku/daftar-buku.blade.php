@@ -163,8 +163,16 @@
                                             </button>
                                         @elseif ($statusPeminjaman->status === 'dipinjam')
                                             <button type="button" wire:click="kembalikanBuku({{ $book->id_buku }})"
-                                                class="btn btn-sm btn-outline-danger fw-bold">
-                                                <i class="bi bi-arrow-return-left me-1"></i>Kembalikan Buku
+                                                class="btn btn-sm btn-outline-danger fw-bold"
+                                                wire:loading.attr="disabled"
+                                                wire:target="kembalikanBuku({{ $book->id_buku }})">
+                                                <span wire:loading.remove wire:target="kembalikanBuku({{ $book->id_buku }})">
+                                                    <i class="bi bi-arrow-return-left me-1"></i>Kembalikan Buku
+                                                </span>
+                                                <span wire:loading wire:target="kembalikanBuku({{ $book->id_buku }})">
+                                                    <i class="spinner-border spinner-border-sm me-1" role="status"></i>
+                                                    Memproses...
+                                                </span>
                                             </button>
                                         @elseif ($statusPeminjaman->status === 'dikembalikan')
                                             <button class="btn btn-sm btn-info fw-bold" disabled>
@@ -182,8 +190,16 @@
                                             </button>
                                         @else
                                             <button type="button" wire:click="pinjamBuku({{ $book->id_buku }})"
-                                                class="btn btn-sm btn-outline-success fw-bold">
-                                                <i class="bi bi-book me-1"></i>Pinjam Sekarang
+                                                class="btn btn-sm btn-outline-success fw-bold"
+                                                wire:loading.attr="disabled"
+                                                wire:target="pinjamBuku({{ $book->id_buku }})">
+                                                <span wire:loading.remove wire:target="pinjamBuku({{ $book->id_buku }})">
+                                                    <i class="bi bi-book me-1"></i>Pinjam Sekarang
+                                                </span>
+                                                <span wire:loading wire:target="pinjamBuku({{ $book->id_buku }})">
+                                                    <i class="spinner-border spinner-border-sm me-1" role="status"></i>
+                                                    Memproses...
+                                                </span>
                                             </button>
                                         @endif
                                     @endif

@@ -9,6 +9,10 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PeminjamanKonfirmasi;
+use App\Mail\PengembalianKonfirmasi;
+use App\Mail\PeminjamanDitolak;
 
 #[Title('Peminjaman Buku')]
 #[Layout('layouts.master')]
@@ -23,6 +27,11 @@ class Peminjaman extends Component
     public $filterStatus = '';
     public $filterTanggalAwal = '';
     public $filterTanggalAkhir = '';
+    
+    // Loading states
+    public $loadingKonfirmasiPeminjaman = false;
+    public $loadingKonfirmasiPengembalian = false;
+    public $loadingTolakPeminjaman = false;
 
     public function mount()
     {
@@ -40,11 +49,25 @@ class Peminjaman extends Component
 
     public function tolakPeminjaman($loanId)
     {
-        $loan = LoanHistory::find($loanId);
-        if ($loan && $loan->status === 'pending') {
-            $loan->update(['status' => 'ditolak']);
+        $this->loadingTolakPeminjaman = true;
+        
+        try {
+            $loan = LoanHistory::with(['user', 'book'])->find($loanId);
+            
+            if ($loan && $loan->status === 'pending') {
+                $loan->update(['status' => 'ditolak']);
 
-            session()->flash('message', 'Peminjaman berhasil ditolak.');
+                // Kirim email notifikasi ke user
+                Mail::to($loan->user->email)->send(new PeminjamanDitolak($loan));
+
+                session()->flash('success', 'Peminjaman berhasil ditolak dan notifikasi email telah dikirim.');
+            } else {
+                session()->flash('error', 'Data peminjaman tidak ditemukan atau status tidak valid.');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        } finally {
+            $this->loadingTolakPeminjaman = false;
         }
     }
 
@@ -57,12 +80,10 @@ class Peminjaman extends Component
     // Fungsi untuk mengonfirmasi peminjaman buku
     public function konfirmasiPeminjaman($loanId)
     {
-        // $this->validate([
-        //     'bukti_pinjam' => 'required|image|max:2048',
-        // ]);
-
+        $this->loadingKonfirmasiPeminjaman = true;
+        
         try {
-            $loan = LoanHistory::find($loanId);
+            $loan = LoanHistory::with(['user', 'book'])->find($loanId);
 
             if (!$loan) {
                 session()->flash('error', 'Data peminjaman tidak ditemukan.');
@@ -86,26 +107,26 @@ class Peminjaman extends Component
                 return;
             }
 
-            // Upload bukti pinjam
-            // $buktiPath = $this->bukti_pinjam->store('bukti-pinjam', 'public');
-
-            // Update status peminjaman menjadi dipinjam dan simpan bukti
+            // Update status peminjaman menjadi dipinjam
             $loan->update([
                 'status' => 'dipinjam',
                 'tanggal_pinjam' => now(),
-                // 'bukti_pinjam' => $buktiPath,
             ]);
 
             // Kurangi stok buku
             $book->decrement('stok');
 
-            session()->flash('success', 'Peminjaman berhasil dikonfirmasi. Buku sekarang dalam status dipinjam.');
+            // Kirim email notifikasi ke user
+            Mail::to($loan->user->email)->send(new PeminjamanKonfirmasi($loan));
+
+            session()->flash('success', 'Peminjaman berhasil dikonfirmasi dan notifikasi email telah dikirim ke peminjam.');
 
             // Reset form
             $this->selectedLoanId = null;
-            // $this->bukti_pinjam = null;
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        } finally {
+            $this->loadingKonfirmasiPeminjaman = false;
         }
     }
 
@@ -118,12 +139,10 @@ class Peminjaman extends Component
 
     public function konfirmasiPengembalian($loanId)
     {
-        // $this->validate([
-        //     'bukti_kembali' => 'required|image|max:2048',
-        // ]);
-
+        $this->loadingKonfirmasiPengembalian = true;
+        
         try {
-            $loan = LoanHistory::find($loanId);
+            $loan = LoanHistory::with(['user', 'book'])->find($loanId);
 
             if (!$loan) {
                 session()->flash('error', 'Data peminjaman tidak ditemukan.');
@@ -142,26 +161,26 @@ class Peminjaman extends Component
                 return;
             }
 
-            // Upload bukti pengembalian
-            // $buktiPath = $this->bukti_kembali->store('bukti-kembali', 'public');
-
-            // Update status peminjaman menjadi selesai dan simpan bukti
+            // Update status peminjaman menjadi selesai
             $loan->update([
                 'status' => 'selesai',
                 'tanggal_kembali' => now(),
-                // 'bukti_kembali' => $buktiPath,
             ]);
 
             // Kembalikan stok buku
             $book->increment('stok');
 
-            session()->flash('success', 'Pengembalian berhasil dikonfirmasi. Status peminjaman sekarang selesai dan stok buku telah dikembalikan.');
+            // Kirim email notifikasi ke user
+            Mail::to($loan->user->email)->send(new PengembalianKonfirmasi($loan));
+
+            session()->flash('success', 'Pengembalian berhasil dikonfirmasi dan notifikasi email telah dikirim ke peminjam.');
 
             // Reset form
             $this->selectedLoanId = null;
-            // $this->bukti_kembali = null;
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        } finally {
+            $this->loadingKonfirmasiPengembalian = false;
         }
     }
 

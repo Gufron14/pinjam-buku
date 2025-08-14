@@ -119,13 +119,29 @@
                                     {{-- Jika status pending, tampilkan button setujui dan tolak --}}
                                     <button type="button" class="btn btn-primary btn-sm"
                                         wire:click="konfirmasiPeminjaman({{ $loan->id_pinjaman }})"
-                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi peminjaman ini?">
-                                        Setujui
+                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi peminjaman ini?"
+                                        wire:loading.attr="disabled"
+                                        wire:target="konfirmasiPeminjaman({{ $loan->id_pinjaman }})">
+                                        <span wire:loading.remove wire:target="konfirmasiPeminjaman({{ $loan->id_pinjaman }})">
+                                            <i class="bi bi-check-circle me-1"></i>Setujui
+                                        </span>
+                                        <span wire:loading wire:target="konfirmasiPeminjaman({{ $loan->id_pinjaman }})">
+                                            <i class="spinner-border spinner-border-sm me-1" role="status"></i>
+                                            Memproses...
+                                        </span>
                                     </button>
                                     <button wire:click="tolakPeminjaman({{ $loan->id_pinjaman }})"
                                         class="btn btn-danger btn-sm"
-                                        wire:confirm="Apakah Anda yakin ingin menolak peminjaman ini?">
-                                        Tolak
+                                        wire:confirm="Apakah Anda yakin ingin menolak peminjaman ini?"
+                                        wire:loading.attr="disabled"
+                                        wire:target="tolakPeminjaman({{ $loan->id_pinjaman }})">
+                                        <span wire:loading.remove wire:target="tolakPeminjaman({{ $loan->id_pinjaman }})">
+                                            <i class="bi bi-x-circle me-1"></i>Tolak
+                                        </span>
+                                        <span wire:loading wire:target="tolakPeminjaman({{ $loan->id_pinjaman }})">
+                                            <i class="spinner-border spinner-border-sm me-1" role="status"></i>
+                                            Memproses...
+                                        </span>
                                     </button>
 
                                     {{-- Dipinjam -> Bukti Pinjam --}}
@@ -145,8 +161,16 @@
                                 @elseif ($loan->status === 'dikembalikan')
                                     <button class="btn btn-primary btn-sm"
                                         wire:click="konfirmasiPengembalian({{ $loan->id_pinjaman }})"
-                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi pengembalian buku ini?">
-                                        Konfirmasi
+                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi pengembalian buku ini?"
+                                        wire:loading.attr="disabled"
+                                        wire:target="konfirmasiPengembalian({{ $loan->id_pinjaman }})">
+                                        <span wire:loading.remove wire:target="konfirmasiPengembalian({{ $loan->id_pinjaman }})">
+                                            <i class="bi bi-check-circle me-1"></i>Konfirmasi
+                                        </span>
+                                        <span wire:loading wire:target="konfirmasiPengembalian({{ $loan->id_pinjaman }})">
+                                            <i class="spinner-border spinner-border-sm me-1" role="status"></i>
+                                            Memproses...
+                                        </span>
                                     </button>
 
                                     {{-- Selesai -> Bukti Kembali --}}
