@@ -23,16 +23,16 @@ class Genre extends Model
      */
     protected $fillable = [
         'nama_genre',
-        'id_kategori',
+        'id_jenis',
     ];
 
     /**
      * Get the category that owns the genre.
      */
-    public function category()
-    {
-        return $this->belongsTo(Categories::class, 'id_kategori', 'id_kategori');
-    }
+    // public function category()
+    // {
+    //     return $this->belongsTo(Categories::class, 'id_kategori', 'id_kategori');
+    // }
 
     /**
      * Get the books for the genre.
@@ -40,5 +40,13 @@ class Genre extends Model
     public function books()
     {
         return $this->hasMany(Book::class, 'id_genre', 'id_genre');
+    }
+
+    /**
+     * Relasi ke jenis buku (belongsTo)
+     */
+    public function type()
+    {
+        return $this->belongsTo(Type::class, 'id_jenis', 'id_jenis');
     }
 }

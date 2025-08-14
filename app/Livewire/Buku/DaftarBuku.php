@@ -35,6 +35,8 @@ class DaftarBuku extends Component
     public function updatingKategoriFilter()
     {
         $this->resetPage();
+        // Reset filter jenis ketika kategori berubah
+        $this->jenisFilter = '';
     }
 
     public function updatingGenreFilter()
@@ -262,7 +264,13 @@ class DaftarBuku extends Component
         $books = $booksQuery->orderBy('created_at', 'desc')->paginate(12);
         $categories = \App\Models\Categories::all();
         $genres = \App\Models\Genre::all();
-        $types = \App\Models\Type::all();
+        
+        // Filter types berdasarkan kategori yang dipilih
+        if ($this->kategoriFilter) {
+            $types = \App\Models\Type::where('id_kategori', $this->kategoriFilter)->get();
+        } else {
+            $types = \App\Models\Type::all();
+        }
 
         return view('livewire.buku.daftar-buku', [
             'books' => $books,

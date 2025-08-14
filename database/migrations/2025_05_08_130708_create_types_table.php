@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -24,15 +23,6 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->unique(['nama_jenis', 'id_kategori']); // Novel di Fiksi ≠ Novel di Nonfiksi (kalau pun ada)
         });
-
-        // Insert default book types
-        DB::table('types')->insert([
-            ['nama_jenis' => 'Novel'],
-            ['nama_jenis' => 'Cerpen'],
-            ['nama_jenis' => 'Komik'],
-            ['nama_jenis' => 'Buku Anak-anak'],
-            ['nama_jenis' => 'Lainnya'],
-        ]);
     }
 
     /**

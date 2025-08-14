@@ -23,6 +23,7 @@ class Type extends Model
      */
     protected $fillable = [
         'nama_jenis',
+        'id_kategori',
     ];
 
     /**
@@ -31,5 +32,21 @@ class Type extends Model
     public function books()
     {
         return $this->hasMany(Book::class, 'id_jenis', 'id_jenis');
+    }
+
+    /**
+     * Relasi ke kategori buku (belongsTo)
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'id_kategori', 'id_kategori');
+    }
+
+    /**
+     * Relasi ke genre buku (hasMany)
+     */
+    public function genres()
+    {
+        return $this->hasMany(Genre::class, 'id_jenis', 'id_jenis');
     }
 }

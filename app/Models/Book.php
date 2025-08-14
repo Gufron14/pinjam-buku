@@ -47,7 +47,7 @@ class Book extends Model
      */
     public function category()
     {
-        return $this->belongsTo(Categories::class, 'id_kategori', 'id_kategori');
+        return $this->belongsTo(Category::class, 'id_kategori', 'id_kategori');
     }
 
     /**

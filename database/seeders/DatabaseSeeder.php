@@ -15,21 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         // Temporarily disable foreign key checks
         Schema::disableForeignKeyConstraints();
-        
+
         // Clear loan_histories table first (since it references books)
         DB::table('loan_histories')->truncate();
-        
+
         // Run the seeders in the correct order
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            CategorySeeder::class,
-            GenreSeeder::class,
-            TypeSeeder::class,
+            BookStructureSeeder::class,
             BookSeeder::class,
         ]);
-        
+
         // Re-enable foreign key checks
         Schema::enableForeignKeyConstraints();
 

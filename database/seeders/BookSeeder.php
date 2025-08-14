@@ -27,244 +27,226 @@ class BookSeeder extends Seeder
         // Re-enable foreign key checks
         Schema::enableForeignKeyConstraints();
 
-        // Get category IDs
-        $fiksiId = Categories::where('nama_kategori', 'Fiksi')->first()->id_kategori;
-        $nonFiksiId = Categories::where('nama_kategori', 'Non-Fiksi')->first()->id_kategori;
+        // Get category IDs (harus sudah ada dari BookStructureSeeder)
+        $fiksiId = Category::where('nama_kategori', 'Fiksi')->firstOrFail()->id_kategori;
+        $nonFiksiId = Category::where('nama_kategori', 'Non Fiksi')->firstOrFail()->id_kategori;
 
-        // Get genre IDs
-        $romansaId = Genre::where('nama_genre', 'Romansa')->first()->id_genre;
-        $fantasiId = Genre::where('nama_genre', 'Fantasi')->first()->id_genre;
-        $fiksiIlmiahId = Genre::where('nama_genre', 'Fiksi Ilmiah')->first()->id_genre;
-        $misteriId = Genre::where('nama_genre', 'Misteri')->first()->id_genre;
-        $hororId = Genre::where('nama_genre', 'Horor')->first()->id_genre;
-        $komediId = Genre::where('nama_genre', 'Komedi')->first()->id_genre;
-        $fiksiLainnyaId = Genre::where('nama_genre', 'Lainnya')->where('id_kategori', $fiksiId)->first()->id_genre;
+        // Get type IDs (harus sudah ada dari BookStructureSeeder)
+        $novelId = Type::where('nama_jenis', 'Novel')->first()?->id_jenis;
+        $cerpenId = Type::where('nama_jenis', 'Cerpen')->first()?->id_jenis;
+        $komikId = Type::where('nama_jenis', 'Komik')->first()?->id_jenis;
+        $biografiId = Type::where('nama_jenis', 'Biografi')->first()?->id_jenis;
+        $ensiklopediaId = Type::where('nama_jenis', 'Ensiklopedia')->first()?->id_jenis;
+        $bukuAnakId = Type::where('nama_jenis', 'Buku Anak-anak')->first()?->id_jenis;
 
-        $biografiId = Genre::where('nama_genre', 'Biografi')->first()->id_genre;
-        $sainsId = Genre::where('nama_genre', 'Sains')->first()->id_genre;
-        $filsafatId = Genre::where('nama_genre', 'Filsafat')->first()->id_genre;
-        $psikologiId = Genre::where('nama_genre', 'Psikologi')->first()->id_genre;
-        $sejarahId = Genre::where('nama_genre', 'Sejarah')->first()->id_genre;
-        $nonFiksiLainnyaId = Genre::where('nama_genre', 'Lainnya')->where('id_kategori', $nonFiksiId)->first()->id_genre;
+        // Get genre IDs (harus sudah ada dari BookStructureSeeder)
+        $fantasiId = Genre::where('nama_genre', 'Fantasi')->first()?->id_genre;
+        $misteriId = Genre::where('nama_genre', 'Misteri')->first()?->id_genre;
+        $romantisId = Genre::where('nama_genre', 'Romantis')->first()?->id_genre;
+        $petualanganId = Genre::where('nama_genre', 'Petualangan')->first()?->id_genre;
+        $humorId = Genre::where('nama_genre', 'Humor')->first()?->id_genre;
+        $inspiratifId = Genre::where('nama_genre', 'Inspiratif')->first()?->id_genre;
+        $dramaId = Genre::where('nama_genre', 'Drama')->first()?->id_genre;
+        $tokohId = Genre::where('nama_genre', 'Tokoh')->first()?->id_genre;
+        $sejarahId = Genre::where('nama_genre', 'Sejarah')->first()?->id_genre;
+        $edukasiId = Genre::where('nama_genre', 'Edukasi')->first()?->id_genre;
+        $sainsId = Genre::where('nama_genre', 'Sains')->first()?->id_genre;
+        $motivasiId = Genre::where('nama_genre', 'Motivasi')->first()?->id_genre;
 
-        // Get type IDs
-        $novelId = Type::where('nama_jenis', 'Novel')->first()->id_jenis;
-        $cerpenId = Type::where('nama_jenis', 'Cerpen')->first()->id_jenis;
-        $komikId = Type::where('nama_jenis', 'Komik')->first()->id_jenis;
-        $bukuAnakId = Type::where('nama_jenis', 'Buku Anak-anak')->first()->id_jenis;
-        $lainnyaId = Type::where('nama_jenis', 'Lainnya')->first()->id_jenis;
+        // Fallback untuk genre jika tidak ada, gunakan yang pertama ditemukan
+        $fallbackGenreId = Genre::first()?->id_genre ?? 1;
 
-        // List of 20 famous Indonesian books
-        // List of 20 famous Indonesian books
+        // List of books dengan genre yang sesuai dengan BookStructureSeeder
         $books = [
             [
-                // Book 1
-                'judul' => 'Cerita Remaja: Persahabatan dan Impian',
+                'judul' => 'Laskar Pelangi',
                 'penulis' => 'Andrea Hirata',
                 'tahun_terbit' => 2005,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $inspiratifId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 13
             ],
             [
-                // Book 2
-                'judul' => 'Pelajaran Matematika SMP',
+                'judul' => 'Bumi Manusia',
                 'penulis' => 'Pramoedya Ananta Toer',
                 'tahun_terbit' => 1980,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $sejarahId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 17
             ],
             [
-                // Book 3
-                'judul' => 'Pelajaran Bahasa Indonesia SMP',
+                'judul' => 'Ayat-Ayat Cinta',
                 'penulis' => 'Habiburrahman El Shirazy',
                 'tahun_terbit' => 2004,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $romansaId,
+                'id_genre' => $romantisId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 17
             ],
             [
-                // Book 4
-                'judul' => 'Pelajaran IPA SMP',
+                'judul' => 'Ronggeng Dukuh Paruk',
                 'penulis' => 'Ahmad Tohari',
                 'tahun_terbit' => 1982,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $dramaId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 17
             ],
             [
-                // Book 5
-                'judul' => 'Pelajaran IPS SMP',
+                'judul' => 'Dilan: Dia adalah Dilanku Tahun 1990',
                 'penulis' => 'Pidi Baiq',
                 'tahun_terbit' => 2014,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $romansaId,
+                'id_genre' => $romantisId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 15
             ],
             [
-                // Book 6
-                'judul' => 'Cerita Remaja: Petualangan di Kota',
-                'penulis' => 'Dee Lestari',
-                'tahun_terbit' => 2006,
+                'judul' => 'Petualangan Sherina',
+                'penulis' => 'Mira Lesmana',
+                'tahun_terbit' => 2000,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $petualanganId ?? $fallbackGenreId,
                 'id_jenis' => $cerpenId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 10
             ],
             [
-                // Book 7
-                'judul' => 'Cerita Remaja: Cita-cita dan Harapan',
+                'judul' => 'Sang Pemimpi',
                 'penulis' => 'Andrea Hirata',
                 'tahun_terbit' => 2006,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $inspiratifId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 13
             ],
             [
-                // Book 8
-                'judul' => 'Pelajaran Bahasa Inggris SMP',
+                'judul' => 'Perahu Kertas',
                 'penulis' => 'Dee Lestari',
                 'tahun_terbit' => 2009,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $romansaId,
+                'id_genre' => $romantisId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
                 'untuk_umur' => 16
             ],
             [
-                // Book 9
-                'judul' => 'Pelajaran Seni Budaya SMP',
+                'judul' => 'Negeri 5 Menara',
                 'penulis' => 'Ahmad Fuadi',
                 'tahun_terbit' => 2009,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $inspiratifId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 15
             ],
             [
-                // Book 10
-                'judul' => 'Cerita Remaja: Persahabatan dan Cinta',
+                'judul' => 'Tenggelamnya Kapal Van Der Wijck',
                 'penulis' => 'Hamka',
                 'tahun_terbit' => 1938,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $romansaId,
+                'id_genre' => $romantisId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 16
+                'untuk_umur' => 17
             ],
             [
-                // Book 11
                 'judul' => 'Cantik Itu Luka',
                 'penulis' => 'Eka Kurniawan',
                 'tahun_terbit' => 2002,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
+                'id_genre' => $dramaId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 17
+                'untuk_umur' => 18
             ],
             [
-                // Book 12
-                'judul' => 'Pulang',
-                'penulis' => 'Leila S. Chudori',
-                'tahun_terbit' => 2012,
-                'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
-                'id_jenis' => $novelId,
-                'stok' => rand(1, 10),
-                'untuk_umur' => 17
-            ],
-            [
-                // Book 13
-                'judul' => 'Saman',
-                'penulis' => 'Ayu Utami',
-                'tahun_terbit' => 1998,
-                'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
-                'id_jenis' => $novelId,
-                'stok' => rand(1, 10),
-                'untuk_umur' => 17
-            ],
-            [
-                // Book 14
                 'judul' => 'Lelaki Harimau',
                 'penulis' => 'Eka Kurniawan',
                 'tahun_terbit' => 2004,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fantasiId,
+                'id_genre' => $fantasiId ?? $fallbackGenreId,
                 'id_jenis' => $novelId,
                 'stok' => rand(1, 10),
                 'untuk_umur' => 17
             ],
             [
-                // Book 15
-                'judul' => 'Supernova: Kesatria, Putri, dan Bintang Jatuh',
-                'penulis' => 'Dee Lestari',
-                'tahun_terbit' => 2001,
+                'judul' => 'Si Juki: Komik Strip',
+                'penulis' => 'Faza Meonk',
+                'tahun_terbit' => 2015,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiIlmiahId,
-                'id_jenis' => $novelId,
+                'id_genre' => $humorId ?? $fallbackGenreId,
+                'id_jenis' => $komikId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 17
+                'untuk_umur' => 13
             ],
             [
-                // Book 16
-                'judul' => 'Laut Bercerita',
-                'penulis' => 'Leila S. Chudori',
-                'tahun_terbit' => 2017,
+                'judul' => 'Detektif Conan: Misteri Pembunuhan',
+                'penulis' => 'Gosho Aoyama',
+                'tahun_terbit' => 2010,
                 'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
-                'id_jenis' => $novelId,
+                'id_genre' => $misteriId ?? $fallbackGenreId,
+                'id_jenis' => $komikId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 17
+                'untuk_umur' => 12
             ],
             [
-                // Book 17
-                'judul' => 'Gadis Pantai',
-                'penulis' => 'Pramoedya Ananta Toer',
-                'tahun_terbit' => 1962,
-                'id_kategori' => $fiksiId,
-                'id_genre' => $fiksiLainnyaId,
-                'id_jenis' => $novelId,
-                'stok' => rand(1, 10),
-                'untuk_umur' => 17
-            ],
-            [
-                // Book 18
-                'judul' => 'Sepotong Senja untuk Pacarku',
-                'penulis' => 'Seno Gumira Ajidarma',
-                'tahun_terbit' => 2002,
-                'id_kategori' => $fiksiId,
-                'id_genre' => $romansaId,
-                'id_jenis' => $cerpenId,
-                'stok' => rand(1, 10),
-                'untuk_umur' => 17
-            ],
-            [
-                // Book 19
-                'judul' => 'Manusia Setengah Salmon',
-                'penulis' => 'Raditya Dika',
-                'tahun_terbit' => 2011,
+                'judul' => 'Habibie & Ainun',
+                'penulis' => 'Bacharuddin Jusuf Habibie',
+                'tahun_terbit' => 2010,
                 'id_kategori' => $nonFiksiId,
-                'id_genre' => $nonFiksiLainnyaId,
-                'id_jenis' => $lainnyaId,
+                'id_genre' => $tokohId ?? $fallbackGenreId,
+                'id_jenis' => $biografiId,
                 'stok' => rand(1, 10),
-                'untuk_umur' => 17
+                'untuk_umur' => 16
+            ],
+            [
+                'judul' => 'Soekarno: Biografi Sang Proklamator',
+                'penulis' => 'Cindy Adams',
+                'tahun_terbit' => 1966,
+                'id_kategori' => $nonFiksiId,
+                'id_genre' => $sejarahId ?? $fallbackGenreId,
+                'id_jenis' => $biografiId,
+                'stok' => rand(1, 10),
+                'untuk_umur' => 15
+            ],
+            [
+                'judul' => 'Ensiklopedia Anak: Dunia Sains',
+                'penulis' => 'Tim Penerbit',
+                'tahun_terbit' => 2018,
+                'id_kategori' => $nonFiksiId,
+                'id_genre' => $sainsId ?? $fallbackGenreId,
+                'id_jenis' => $ensiklopediaId,
+                'stok' => rand(1, 10),
+                'untuk_umur' => 10
+            ],
+            [
+                'judul' => 'Buku Cerita Anak: Petualangan Si Kancil',
+                'penulis' => 'Penulis Anonim',
+                'tahun_terbit' => 2020,
+                'id_kategori' => $nonFiksiId,
+                'id_genre' => $edukasiId ?? $fallbackGenreId,
+                'id_jenis' => $bukuAnakId,
+                'stok' => rand(1, 10),
+                'untuk_umur' => 6
+            ],
+            [
+                'judul' => 'Motivasi untuk Anak: Meraih Mimpi',
+                'penulis' => 'Merry Riana',
+                'tahun_terbit' => 2019,
+                'id_kategori' => $nonFiksiId,
+                'id_genre' => $motivasiId ?? $fallbackGenreId,
+                'id_jenis' => $bukuAnakId,
+                'stok' => rand(1, 10),
+                'untuk_umur' => 8
             ],
         ];
 
