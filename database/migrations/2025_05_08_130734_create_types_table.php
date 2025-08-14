@@ -15,7 +15,14 @@ return new class extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->id('id_jenis');
             $table->string('nama_jenis');
+            $table->unsignedBigInteger('id_kategori'); // <- relasi ke categories
             $table->timestamps();
+
+            $table->foreign('id_kategori')
+                ->references('id_kategori')
+                ->on('categories')
+                ->onDelete('cascade');
+            $table->unique(['nama_jenis', 'id_kategori']); // Novel di Fiksi ≠ Novel di Nonfiksi (kalau pun ada)
         });
 
         // Insert default book types

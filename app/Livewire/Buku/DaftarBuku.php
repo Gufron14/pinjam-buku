@@ -75,6 +75,15 @@ class DaftarBuku extends Component
 
         $user = auth()->user();
 
+        // Cek verifikasi email
+        if (is_null($user->email_verified_at)) {
+            $this->dispatch('showAlertPinjam', [
+                'type' => 'error',
+                'message' => 'Akun kamu belum terverifikasi email. Silakan verifikasi email terlebih dahulu sebelum meminjam buku.',
+            ]);
+            return;
+        }
+
         // Check if user has unpaid fines
         // if (LoanHistory::hasUnpaidFines($user->id)) {
         //     $this->dispatch('showAlertPinjam', [
@@ -208,10 +217,10 @@ class DaftarBuku extends Component
     {
         $user = auth()->user();
         $umur = $user ? $user->umur : null;
-        
+
         // Show age filter for users 17+ OR when no user is logged in
         $showUmurFilter = !$user || ($umur && $umur >= 17);
-        
+
         $booksQuery = Book::with(['category', 'genre', 'type'])
             ->when($this->search, function ($query) {
                 return $query->where('judul', 'like', '%' . $this->search . '%')->orWhere('penulis', 'like', '%' . $this->search . '%');
@@ -254,7 +263,7 @@ class DaftarBuku extends Component
         $categories = \App\Models\Categories::all();
         $genres = \App\Models\Genre::all();
         $types = \App\Models\Type::all();
-        
+
         return view('livewire.buku.daftar-buku', [
             'books' => $books,
             'categories' => $categories,

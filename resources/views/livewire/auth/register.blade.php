@@ -1,4 +1,9 @@
 <div>
+    @if (session()->has('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
     <div class="container px-4 py-5">
         <div class="card shadow border-0">
             <div class="card-body p-5">

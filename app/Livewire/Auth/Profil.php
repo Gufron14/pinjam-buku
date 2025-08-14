@@ -96,4 +96,15 @@ class Profil extends Component
     {
         return view('livewire.auth.profil');
     }
+
+    public function sendEmailVerification()
+    {
+        $user = Auth::user();
+        if ($user && is_null($user->email_verified_at)) {
+            $user->sendEmailVerificationNotification();
+            session()->flash('success', 'Email verifikasi telah dikirim ke alamat email Anda. Silakan cek inbox Gmail Anda.');
+        } else {
+            session()->flash('error', 'Email sudah terverifikasi atau user tidak ditemukan.');
+        }
+    }
 }

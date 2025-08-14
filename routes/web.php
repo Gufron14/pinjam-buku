@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\LaporanController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,28 @@ use App\Http\Controllers\LaporanController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Rute untuk menampilkan halaman verifikasi
+Route::get('email/verify', function () {
+    return view('verify-email');
+})
+    ->middleware('auth')
+    ->name('verification.notice');
+
+// Rute untuk memproses verifikasi email
+Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/');
+})
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+// Rute untuk mengirim ulang email verifikasi
+Route::post('email/verification-notification', function () {
+    Auth::user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Link verifikasi telah dikirim ulang!');
+})
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
 
 Route::middleware('guest')->group(function () {
     Route::get('login', Login::class)->name('login');

@@ -37,7 +37,15 @@
                                 <div class="mt-3">
                                     <h4>{{ $name }}</h4>
                                     <p class="text-secondary mb-1">{{ $email }}</p>
-                                    <p class="text-muted font-size-sm">{{ $alamat }}</p>
+                                    @if (is_null(Auth::user()->email_verified_at))
+                                        <button wire:click="sendEmailVerification" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-envelope-exclamation me-2"></i>Kirim
+                                            Email Verifikasi</button>
+                                    @else
+                                        <button wire:click="sendEmailVerification" class="btn btn-success btn-sm"
+                                            disabled><i class="bi bi-check2-circle me-2"></i>Terverifikasi</button>
+                                    @endif
+                                    <p class="text-muted font-size-sm mt-2">{{ $alamat }}</p>
                                     <div class="mt-2">
                                         <label for="avatar-upload" class="btn btn-primary btn-sm">
                                             Ubah Foto Profil
@@ -54,33 +62,6 @@
                                                 menyimpan.</span>
                                         </div>
                                     @endif
-                                    
-                                    <div class="mt-4">
-                                        <h6>KTP</h6>
-                                        @if ($newKtp)
-                                            <img src="{{ $newKtp->temporaryUrl() }}" alt="Preview KTP" class="img-fluid mb-2" style="max-height: 200px;">
-                                        @elseif($ktp && Storage::disk('public')->exists($ktp))
-                                            <img src="{{ Storage::url($ktp) }}" alt="KTP" class="img-fluid mb-2" style="max-height: 200px;">
-                                        @else
-                                            <p class="text-muted">Belum ada KTP yang diunggah</p>
-                                        @endif
-                                        
-                                        <div class="mt-2">
-                                            <label for="ktp-upload" class="btn btn-primary btn-sm">
-                                                {{ $ktp ? 'Ubah KTP' : 'Unggah KTP' }}
-                                            </label>
-                                            <input id="ktp-upload" type="file" wire:model="newKtp" class="d-none">
-                                        </div>
-                                        @error('newKtp')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                        
-                                        @if ($newKtp)
-                                            <div class="mt-2">
-                                                <span class="text-success">KTP baru dipilih. Klik "Simpan Perubahan" untuk menyimpan.</span>
-                                            </div>
-                                        @endif
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +71,7 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-5">
                             <form wire:submit.prevent="updateProfile">
-                                <div class="row mb-3">
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Nama Lengkap</h6>
                                     </div>
@@ -101,7 +82,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Email</h6>
                                     </div>
@@ -112,7 +93,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">No. Telepon</h6>
                                     </div>
@@ -123,7 +104,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Alamat</h6>
                                     </div>
@@ -133,14 +114,41 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                                                        <div class="mt-4">
+                                        <h6>KTP</h6>
+                                        @if ($newKtp)
+                                            <img src="{{ $newKtp->temporaryUrl() }}" alt="Preview KTP"
+                                                class="img-fluid mb-2" style="max-height: 200px;">
+                                        @elseif($ktp && Storage::disk('public')->exists($ktp))
+                                            <img src="{{ Storage::url($ktp) }}" alt="KTP" class="img-fluid mb-2"
+                                                style="max-height: 200px;">
+                                        @else
+                                            <p class="text-muted">Belum ada KTP yang diunggah</p>
+                                        @endif
+
+                                        <div class="mt-2">
+                                            <label for="ktp-upload" class="btn btn-success btn-sm">
+                                                {{ $ktp ? 'Ubah KTP' : 'Unggah KTP' }}
+                                            </label>
+                                            <input id="ktp-upload" type="file" wire:model="newKtp" class="d-none">
+                                        </div>
+                                        @error('newKtp')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+
+                                        @if ($newKtp)
+                                            <div class="mt-2">
+                                                <span class="text-success">KTP baru dipilih. Klik "Simpan Perubahan"
+                                                    untuk menyimpan.</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-9 text-secondary">
+                                
+                                    <div class="text-secondary">
                                         <button type="submit" class="btn btn-primary px-4 fw-bold">Simpan
                                             Perubahan</button>
                                     </div>
-                                </div>
                             </form>
                         </div>
                     </div>

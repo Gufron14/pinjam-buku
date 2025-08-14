@@ -28,8 +28,8 @@
                         <span class="input-group-text">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="Cari nama, email, atau no. telepon..." 
-                               wire:model.live="search">
+                        <input type="text" class="form-control" placeholder="Cari nama, email, atau no. telepon..."
+                            wire:model.live="search">
                     </div>
                 </div>
             </div>
@@ -53,19 +53,20 @@
                                 <td class="text-center">{{ $users->firstItem() + $index }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/img/user.png') }}" 
-                                             class="rounded-circle me-2" width="40" height="40" 
-                                             style="object-fit: cover;" alt="Avatar">
+                                        <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('assets/img/user.png') }}"
+                                            class="rounded-circle me-2" width="40" height="40"
+                                            style="object-fit: cover;" alt="Avatar">
                                         <div>
                                             <strong>{{ $user->name }}</strong>
                                             <br>
-                                            <small class="text-muted">{{ ucfirst($user->jenis_kelamin ?? 'Tidak diset') }}</small>
+                                            <small class="text-muted">{{ ucfirst($user->getUmurAttribute()) }}
+                                                Tahun</small>
                                         </div>
                                     </div>
                                 </td>
                                 {{-- <td>
-                                    @if($user->loans->count() > 0)
-                                        @foreach($user->loans as $loan)
+                                    @if ($user->loans->count() > 0)
+                                        @foreach ($user->loans as $loan)
                                             <span class="badge bg-warning text-dark mb-1 d-block">
                                                 {{ $loan->book->judul ?? 'Buku tidak ditemukan' }}
                                             </span>
@@ -74,11 +75,24 @@
                                         <span class="text-muted">Tidak ada buku dipinjam</span>
                                     @endif
                                 </td> --}}
-                                <td>{{ $user->email }}</td>
                                 <td>
-                                    @if($user->no_telepon)
-                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->no_telepon) }}" 
-                                           target="_blank" class="text-success text-decoration-none">
+                                    <div class="d-flex justify-content-between">
+                                        {{ $user->email }}
+                                        <div>
+                                            @if ($user->email_verified_at)
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-2"></i>Verified</span>
+                                            @else
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times me-2"></i>Unverivied</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if ($user->no_telepon)
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->no_telepon) }}"
+                                            target="_blank" class="text-success text-decoration-none">
                                             <i class="bi bi-whatsapp"></i> {{ $user->no_telepon }}
                                         </a>
                                     @else
@@ -86,9 +100,9 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-info btn-sm" 
-                                            wire:click="showDetail({{ $user->id }})"
-                                            data-bs-toggle="modal" data-bs-target="#detailModal">
+                                    <button type="button" class="btn btn-info btn-sm"
+                                        wire:click="showDetail({{ $user->id }})" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
                                         <i class="bi bi-eye"></i> Detail
                                     </button>
                                 </td>
@@ -110,7 +124,8 @@
             {{-- Pagination --}}
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div class="text-muted">
-                    Menampilkan {{ $users->firstItem() ?? 0 }} - {{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} member
+                    Menampilkan {{ $users->firstItem() ?? 0 }} - {{ $users->lastItem() ?? 0 }} dari
+                    {{ $users->total() }} member
                 </div>
                 {{ $users->links() }}
             </div>
@@ -118,25 +133,27 @@
     </div>
 
     {{-- Modal Detail User --}}
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true"
+        wire:ignore.self>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailModalLabel">
                         <i class="bi bi-person-circle me-2"></i>Detail Member
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        wire:click="closeModal"></button>
                 </div>
                 <div class="modal-body">
-                    @if($selectedUser)
+                    @if ($selectedUser)
                         <div class="row">
                             {{-- Profile Picture --}}
                             <div class="col-md-4 text-center mb-3">
-                                <img src="{{ $selectedUser->avatar ? asset('storage/' . $selectedUser->avatar) : asset('assets/img/user.png') }}" 
-                                     class="rounded-circle img-fluid" width="150" height="150" 
-                                     style="object-fit: cover;" alt="Avatar">
+                                <img src="{{ $selectedUser->avatar ? asset('storage/' . $selectedUser->avatar) : asset('assets/img/user.png') }}"
+                                    class="rounded-circle img-fluid" width="150" height="150"
+                                    style="object-fit: cover;" alt="Avatar">
                             </div>
-                            
+
                             {{-- User Information --}}
                             <div class="col-md-8">
                                 <table class="table table-borderless">
@@ -145,15 +162,19 @@
                                         <td>{{ $selectedUser->name }}</td>
                                     </tr>
                                     <tr>
+                                        <td><strong>Tanggal Lahir:</strong></td>
+                                        <td>{{ $selectedUser->ttl }}</td>
+                                    </tr>
+                                    <tr>
                                         <td><strong>Email:</strong></td>
                                         <td>{{ $selectedUser->email }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>No. Telepon:</strong></td>
                                         <td>
-                                            @if($selectedUser->no_telepon)
-                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $selectedUser->no_telepon) }}" 
-                                                   target="_blank" class="text-success text-decoration-none">
+                                            @if ($selectedUser->no_telepon)
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $selectedUser->no_telepon) }}"
+                                                    target="_blank" class="text-success text-decoration-none">
                                                     <i class="bi bi-whatsapp"></i> {{ $selectedUser->no_telepon }}
                                                 </a>
                                             @else
@@ -182,9 +203,9 @@
                             <h6 class="border-bottom pb-2 mb-3">
                                 <i class="bi bi-id-card me-2"></i>Foto Tanda Pengenal
                             </h6>
-                            @if($selectedUser->ktp)
-                                <img src="{{ asset('storage/' . $selectedUser->ktp) }}" 
-                                     class="img-fluid rounded" alt="Foto KTP">
+                            @if ($selectedUser->ktp)
+                                <img src="{{ asset('storage/' . $selectedUser->ktp) }}" class="img-fluid rounded"
+                                    alt="Foto KTP">
                             @else
                                 <div class="text-center text-muted py-3">
                                     <i class="bi bi-inbox fs-3 d-block mb-2"></i>
@@ -198,7 +219,7 @@
                             <h6 class="border-bottom pb-2 mb-3">
                                 <i class="bi bi-book me-2"></i>Riwayat Peminjaman
                             </h6>
-                            @if($selectedUser->loans && $selectedUser->loans->count() > 0)
+                            @if ($selectedUser->loans && $selectedUser->loans->count() > 0)
                                 <div class="table-responsive">
                                     <table class="table table-sm table-striped">
                                         <thead>
@@ -210,19 +231,19 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($selectedUser->loans as $loan)
+                                            @foreach ($selectedUser->loans as $loan)
                                                 <tr>
                                                     <td>{{ $loan->book->judul ?? 'Buku tidak ditemukan' }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }}</td>
                                                     <td>
-                                                        @if($loan->tanggal_kembali)
+                                                        @if ($loan->tanggal_kembali)
                                                             {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}
                                                         @else
                                                             <span class="text-muted">Belum dikembalikan</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($loan->status == 'pinjam')
+                                                        @if ($loan->status == 'pinjam')
                                                             <span class="badge bg-warning">Dipinjam</span>
                                                         @elseif($loan->status == 'kembali')
                                                             <span class="badge bg-success">Dikembalikan</span>
@@ -245,7 +266,8 @@
                     @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        wire:click="closeModal">
                         <i class="bi bi-x-circle me-1"></i>Tutup
                     </button>
                 </div>
@@ -255,12 +277,12 @@
 </div>
 
 @push('scripts')
-<script>
-    document.addEventListener('livewire:init', () => {
-        Livewire.on('show-modal', () => {
-            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
-            modal.show();
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('show-modal', () => {
+                const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+                modal.show();
+            });
         });
-    });
-</script>
+    </script>
 @endpush

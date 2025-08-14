@@ -51,7 +51,7 @@ class Register extends Component
         }
 
         try {
-            User::create([
+            $user = User::create([
                 'name' => $this->name,
                 'alamat' => $this->alamat,
                 'ttl' => $this->ttl,
@@ -60,12 +60,9 @@ class Register extends Component
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
             ]);
-
-            // Assign role 'user' to the new user
-            $user = User::where('email', $this->email)->first();
             $user->assignRole('user');
-
-            session()->flash('success', 'Pendaftaran berhasil! Silahkan login.');
+            $user->sendEmailVerificationNotification();
+            session()->flash('success', 'Pendaftaran berhasil! Silahkan cek email untuk verifikasi.');
             return redirect()->route('login');
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
