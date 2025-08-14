@@ -17,31 +17,44 @@ class Register extends Component
     public $name;
     public $alamat;
     public $no_telepon;
+    public $ttl;
     public $email;
     public $ktp;
     public $password;
     public $password_confirmation;
+    public $umur;
 
     protected $rules = [
         'name' => 'required|min:3',
         'alamat' => 'required|min:5',
+        'ttl' => 'required|date',
         'no_telepon' => 'required|numeric|digits_between:10,15',
-        'ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'ktp' => '', // will be set dynamically
         'email' => 'required|email|unique:users',
         'password' => 'required|min:6|confirmed',
     ];
 
     public function register()
     {
+        // Set KTP validation rule based on age
+        if ($this->umur !== null && $this->umur >= 17) {
+            $this->rules['ktp'] = 'required|image|mimes:jpeg,png,jpg|max:2048';
+        } else {
+            $this->rules['ktp'] = 'nullable|image|mimes:jpeg,png,jpg|max:2048';
+        }
         $this->validate();
 
-        // Unggah gambar KTP
-        $ktpPath = $this->ktp->store('ktp', 'public');
+        // Unggah gambar KTP jika ada
+        $ktpPath = null;
+        if ($this->ktp) {
+            $ktpPath = $this->ktp->store('ktp', 'public');
+        }
 
         try {
             User::create([
                 'name' => $this->name,
                 'alamat' => $this->alamat,
+                'ttl' => $this->ttl,
                 'no_telepon' => $this->no_telepon,
                 'ktp' => $ktpPath,
                 'email' => $this->email,
@@ -62,5 +75,16 @@ class Register extends Component
     public function render()
     {
         return view('livewire.auth.register');
+    }
+
+    public function updatedTtl($value)
+    {
+        if ($value) {
+            $tahun_lahir = date('Y', strtotime($value));
+            $tahun_sekarang = date('Y');
+            $this->umur = $tahun_sekarang - $tahun_lahir;
+        } else {
+            $this->umur = null;
+        }
     }
 }

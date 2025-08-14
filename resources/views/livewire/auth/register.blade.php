@@ -20,6 +20,15 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
+                                <label for="ttl" class="form-label">Tanggal Lahir</label>
+                                <input type="date" class="form-control @error('ttl') is-invalid @enderror"
+                                    wire:model.lazy="ttl" placeholder="Masukan Tanggal Lahir" min="{{ date('Y-m-d', strtotime('-100 years')) }}"
+                                    max="{{ date('Y-m-d', strtotime('-6 years')) }}">
+                                @error('ttl')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
                                 <label for="alamat" class="form-label">Alamat</label>
                                 <input type="text" class="form-control @error('alamat') is-invalid @enderror"
                                     wire:model="alamat" placeholder="Masukan Alamat Lengkap">
@@ -35,6 +44,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            @if($umur !== null && $umur >= 17)
                             <div class="mb-3">
                                 <label for="ktp" class="form-label">Foto KTP</label>
                                 <input type="file" class="form-control @error('ktp') is-invalid @enderror"
@@ -43,6 +53,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            @endif
                         </div>
 
                         <div class="col-md-6">

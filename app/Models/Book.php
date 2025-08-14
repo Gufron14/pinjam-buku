@@ -30,6 +30,8 @@ class Book extends Model
         'stok',
         'penulis',
         'tahun_terbit',
+        'untuk_umur',
+        'id_age_group',
     ];
 
     /**
@@ -62,6 +64,14 @@ class Book extends Model
     public function type()
     {
         return $this->belongsTo(Type::class, 'id_jenis', 'id_jenis');
+    }
+
+    /**
+     * Get the age group that owns the book.
+     */
+    public function ageGroup()
+    {
+        return $this->belongsTo(AgeGroup::class, 'id_age_group', 'id_age_group');
     }
 
     /**

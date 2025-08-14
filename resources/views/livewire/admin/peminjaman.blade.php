@@ -49,7 +49,8 @@
             <h4 class="card-title">Daftar Peminjaman Buku</h4>
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Cari nama peminjam atau judul buku" wire:model.live.debounce.500ms="search">
+                    <input type="text" class="form-control" placeholder="Cari nama peminjam atau judul buku"
+                        wire:model.live.debounce.500ms="search">
                 </div>
                 <div class="col-md-2">
                     <select class="form-select" wire:model.live="filterStatus">
@@ -64,10 +65,12 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <input type="date" class="form-control" wire:model.live="filterTanggalAwal" placeholder="Tanggal Awal">
+                    <input type="date" class="form-control" wire:model.live="filterTanggalAwal"
+                        placeholder="Tanggal Awal">
                 </div>
                 <div class="col-md-2">
-                    <input type="date" class="form-control" wire:model.live="filterTanggalAkhir" placeholder="Tanggal Akhir">
+                    <input type="date" class="form-control" wire:model.live="filterTanggalAkhir"
+                        placeholder="Tanggal Akhir">
                 </div>
             </div>
         </div>
@@ -114,10 +117,11 @@
                             <td>
                                 @if ($loan->status === 'pending')
                                     {{-- Jika status pending, tampilkan button setujui dan tolak --}}
-                            <button type="button" class="btn btn-primary btn-sm" wire:click="konfirmasiPeminjaman({{ $loan->id_pinjaman }})"
-                                wire:confirm="Apakah Anda yakin ingin mengonfirmasi peminjaman ini?">
-                               Setujui
-                            </button>
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        wire:click="konfirmasiPeminjaman({{ $loan->id_pinjaman }})"
+                                        wire:confirm="Apakah Anda yakin ingin mengonfirmasi peminjaman ini?">
+                                        Setujui
+                                    </button>
                                     <button wire:click="tolakPeminjaman({{ $loan->id_pinjaman }})"
                                         class="btn btn-danger btn-sm"
                                         wire:confirm="Apakah Anda yakin ingin menolak peminjaman ini?">
@@ -126,15 +130,21 @@
 
                                     {{-- Dipinjam -> Bukti Pinjam --}}
                                 @elseif ($loan->status === 'dipinjam')
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    {{-- <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#buktiModal"
                                         wire:click="setSelectedLoan({{ $loan->id_pinjaman }})">
                                         <i class="uil-eye me-1"></i>Bukti Pinjam
-                                    </button>
+                                    </button> --}}
+                                    <a href="{{ route('receipt', $loan->id_pinjaman) }}"
+                                        class="btn btn-success btn-sm">
+                                        <i class="uil-eye me-1"></i>
+                                        Lihat Struk
+                                    </a>
 
                                     {{-- Dikembalikan -> Konfirmasi --}}
                                 @elseif ($loan->status === 'dikembalikan')
-                                    <button class="btn btn-primary btn-sm" wire:click="konfirmasiPengembalian({{ $loan->id_pinjaman }})"
+                                    <button class="btn btn-primary btn-sm"
+                                        wire:click="konfirmasiPengembalian({{ $loan->id_pinjaman }})"
                                         wire:confirm="Apakah Anda yakin ingin mengonfirmasi pengembalian buku ini?">
                                         Konfirmasi
                                     </button>
@@ -164,8 +174,9 @@
                                             Hubungi
                                         </a>
 
-                                        <button class="btn btn-sm btn-primary" wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
-                                        wire:confirm="Apakah Anda yakin ingin menandai denda sebagai dibayar?">
+                                        <button class="btn btn-sm btn-primary"
+                                            wire:click="markFineAsPaid({{ $loan->id_pinjaman }})"
+                                            wire:confirm="Apakah Anda yakin ingin menandai denda sebagai dibayar?">
                                             Tandai Lunas
                                         </button>
                                     @endif

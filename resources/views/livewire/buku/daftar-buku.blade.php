@@ -54,6 +54,16 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if($showUmurFilter)
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Filter Umur</label>
+                                <select wire:model.live="umurFilter" class="form-select">
+                                    <option value="">Semua Umur</option>
+                                    <option value="under_17">Di bawah 17 tahun</option>
+                                    <option value="17+">17 tahun ke atas</option>
+                                </select>
+                            </div>
+                            @endif
                             <div class="col-md-3 d-flex align-items-end">
                                 <button class="btn btn-outline-secondary w-100" wire:click="resetFilters">
                                     <i class="bi bi-x-circle me-1"></i> Reset Filter

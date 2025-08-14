@@ -180,7 +180,7 @@ class Peminjaman extends Component
     public function getStatusBadge($status)
     {
         return match ($status) {
-            'pending' => '<span class="badge bg-secondary">Baru</span>',
+            'pending' => '<span class="badge bg-primary">Baru</span>',
             'dipinjam' => '<span class="badge bg-primary">Dipinjam</span>',
             'dikembalikan' => '<span class="badge bg-warning">Dikembalikan</span>',
             'terlambat' => '<span class="badge bg-danger">Terlambat</span>',

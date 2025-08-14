@@ -30,6 +30,9 @@
         {{ $slot }}
     </div>
 
+    {{-- <a href="https://wa.me/6283829253885?text=Hallo%20Taman%20Baca%20Balarea" target="_blank" class="whatsapp-button mb-5">
+        <i class="bi bi-whatsapp"></i> Masuk Grup WA
+    </a> --}}
     <a href="https://wa.me/6283829253885?text=Hallo%20Taman%20Baca%20Balarea" target="_blank" class="whatsapp-button">
         <i class="bi bi-whatsapp"></i> Hubungi Kami
     </a>

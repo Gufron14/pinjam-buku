@@ -18,6 +18,7 @@ class DaftarBuku extends Component
     public $genreFilter = '';
     public $jenisFilter = '';
     public $bookId;
+    public $umurFilter = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -46,12 +47,18 @@ class DaftarBuku extends Component
         $this->resetPage();
     }
 
+    public function updatingUmurFilter()
+    {
+        $this->resetPage();
+    }
+
     public function resetFilters()
     {
         $this->search = '';
         $this->kategoriFilter = '';
         $this->genreFilter = '';
         $this->jenisFilter = '';
+        $this->umurFilter = '';
         $this->resetPage();
     }
 
@@ -199,7 +206,13 @@ class DaftarBuku extends Component
 
     public function render()
     {
-        $books = Book::with(['category', 'genre', 'type'])
+        $user = auth()->user();
+        $umur = $user ? $user->umur : null;
+        
+        // Rule 3: Filter umur hanya tersedia untuk umur 17+
+        $showUmurFilter = $umur && $umur >= 17;
+        
+        $booksQuery = Book::with(['category', 'genre', 'type'])
             ->when($this->search, function ($query) {
                 return $query->where('judul', 'like', '%' . $this->search . '%')->orWhere('penulis', 'like', '%' . $this->search . '%');
             })
@@ -211,18 +224,39 @@ class DaftarBuku extends Component
             })
             ->when($this->jenisFilter, function ($query) {
                 return $query->where('id_jenis', $this->jenisFilter);
-            })
-            ->paginate(12);
+            });
 
+        // Age-based filtering logic
+        if ($user && $umur !== null) {
+            if ($umur <= 16) {
+                // Rule 1: User 16 ke bawah tidak bisa melihat buku untuk_umur 17+
+                $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
+            } else {
+                // Rule 2: User 17+ bisa melihat semua buku, tapi bisa filter dengan umur filter
+                if ($this->umurFilter === '17+') {
+                    $booksQuery = $booksQuery->where('untuk_umur', '>=', 17);
+                } elseif ($this->umurFilter === 'under_17') {
+                    $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
+                }
+                // Jika umurFilter kosong, tampilkan semua buku
+            }
+        } else {
+            // Jika user tidak login atau umur tidak diketahui, tampilkan semua buku kecuali 17+
+            $booksQuery = $booksQuery->where('untuk_umur', '<', 17);
+        }
+
+        $books = $booksQuery->paginate(12);
         $categories = \App\Models\Categories::all();
         $genres = \App\Models\Genre::all();
         $types = \App\Models\Type::all();
-
+        
         return view('livewire.buku.daftar-buku', [
             'books' => $books,
             'categories' => $categories,
             'genres' => $genres,
             'types' => $types,
+            'showUmurFilter' => $showUmurFilter,
+            'umurFilter' => $this->umurFilter,
         ]);
     }
 }

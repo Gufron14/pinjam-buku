@@ -52,6 +52,9 @@
                                         </div>
                                     @elseif ($history->status == 'dipinjam')
                                         <span class="badge text-bg-primary">Dipinjam</span>
+                                        <br><br>
+                                        <a href="{{ route('receipt', $history->id_pinjaman) }}"
+                                            class=""><small>Cetak Struk</small></a>
                                     @elseif ($history->status == 'dikembalikan')
                                         <span class="badge text-bg-secondary">Menunggu Dikembalikan</span>
                                     @elseif ($history->status == 'terlambat')

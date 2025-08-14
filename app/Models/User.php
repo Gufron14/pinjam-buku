@@ -25,41 +25,11 @@ class User extends Authenticatable
         'alamat',
         'no_telepon',
         'jenis_kelamin',
+        'ttl',
         'ktp',
         'avatar',
+        'tanggal_lahir',
     ];
-
-    /**
-     * Relasi dengan Genre
-     */
-    // public function genre()
-    // {
-    //     return $this->belongsTo(Genre::class);
-    // }
-
-    /**
-     * Relasi dengan Loans (menggunakan LoanHistory)
-     */
-    // public function loans()
-    // {
-    //     return $this->hasMany(LoanHistory::class);
-    // }
-
-    /**
-     * Mendapatkan peminjaman yang sedang aktif
-     */
-    // public function activeLoans()
-    // {
-    //     return $this->hasMany(LoanHistory::class)->where('status', 'dipinjam');
-    // }
-
-    /**
-     * Mendapatkan riwayat peminjaman
-     */
-    // public function loanHistory()
-    // {
-    //     return $this->hasMany(LoanHistory::class)->orderBy('created_at', 'desc');
-    // }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -80,4 +50,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the user's age based on birth year from ttl field
+     */
+    public function getUmurAttribute()
+    {
+        if (!$this->ttl) {
+            return null;
+        }
+
+        // Extract birth year from ttl field (assuming format like "Jakarta, 1990-01-01" or just "1990")
+        $birthYear = null;
+        
+        // Try to extract year from various formats
+        if (preg_match('/(\d{4})/', $this->ttl, $matches)) {
+            $birthYear = (int) $matches[1];
+        }
+
+        if ($birthYear) {
+            return now()->year - $birthYear;
+        }
+
+        return null;
+    }
 }

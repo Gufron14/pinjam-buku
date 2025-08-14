@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             GenreSeeder::class,
             TypeSeeder::class,
-            // BookSeeder::class,
+            BookSeeder::class,
         ]);
         
         // Re-enable foreign key checks
